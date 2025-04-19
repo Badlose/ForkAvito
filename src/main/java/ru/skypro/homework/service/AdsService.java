@@ -10,16 +10,16 @@ public interface AdsService {
 
     Ads getAllAds();
 
-    Ad createOrUpdateAd(MultipartFile image, CreateOrUpdateAd updateAd);
+    Ad createNewAd(CreateOrUpdateAd updateAd, MultipartFile image);
 
     ExtendedAd getAdById(Integer id);
 
     void removeAd(Integer id);
 
-    Ad updateAds(Integer id, CreateOrUpdateAd createOrUpdateAd);
+    Ad updateAd(Integer id, CreateOrUpdateAd createOrUpdateAd);
 
     Ads getAdsMe();
 
-    String[] updateImage(Integer id, MultipartFile image);
+    MultipartFile updateImage(Integer id, MultipartFile image);
 
 }

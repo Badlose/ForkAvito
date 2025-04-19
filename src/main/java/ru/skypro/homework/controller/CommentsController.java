@@ -90,9 +90,9 @@ public class CommentsController {
                     @ApiResponse(responseCode = "404", description = "Not found", content = @Content(mediaType = ""))
             }
     )
-    public ResponseEntity<?> deleteComment(@RequestParam(required = true) Integer adId,
+    public void deleteComment(@RequestParam(required = true) Integer adId,
                                            @RequestParam(required = true) Integer commentId) {
-        return commentsService.deleteComment(adId, commentId);
+        commentsService.deleteComment(adId, commentId);
     }
 
     /**

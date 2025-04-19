@@ -71,7 +71,7 @@ public class AdsController {
     )
     public ResponseEntity<Ad> addAd(@RequestPart("properties") CreateOrUpdateAd createAd,
                                     @RequestPart("image") MultipartFile image) {
-        return ResponseEntity.ok(adsService.createOrUpdateAd(image, createAd));
+        return ResponseEntity.ok(adsService.createNewAd(createAd, image));
     }
 
     /**
@@ -142,7 +142,7 @@ public class AdsController {
     )
     public ResponseEntity<Ad> updateAds(@RequestParam(required = true) Integer id,
                                         @RequestBody CreateOrUpdateAd updateAd) {
-        return ResponseEntity.ok(adsService.updateAds(id, updateAd));
+        return ResponseEntity.ok(adsService.updateAd(id, updateAd));
     }
 
     /**
@@ -187,7 +187,7 @@ public class AdsController {
                     @ApiResponse(responseCode = "404", description = "Not found", content = @Content(mediaType = ""))
             }
     )
-    public ResponseEntity<String[]> updateImage(@RequestParam(required = true) Integer id,
+    public ResponseEntity<MultipartFile> updateImage(@RequestParam(required = true) Integer id,
                                                 @RequestBody MultipartFile image) {
         return ResponseEntity.ok(adsService.updateImage(id, image));
     }
