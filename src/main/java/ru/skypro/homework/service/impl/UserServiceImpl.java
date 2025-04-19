@@ -1,6 +1,5 @@
 package ru.skypro.homework.service.impl;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.NewPassword;
@@ -12,8 +11,7 @@ import ru.skypro.homework.service.UserService;
 public class UserServiceImpl implements UserService {
 
     @Override
-    public ResponseEntity<?> setPassword(NewPassword newPassword) {
-        return null;
+    public void setPassword(NewPassword newPassword) {
     }
 
     @Override
@@ -27,8 +25,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity<?> updateUserImage(MultipartFile image) {
-        return null;
+    public void updateUserImage(MultipartFile image) {
     }
 
 }

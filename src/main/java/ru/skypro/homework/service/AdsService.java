@@ -1,6 +1,5 @@
 package ru.skypro.homework.service;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.Ad;
 import ru.skypro.homework.dto.Ads;
@@ -21,6 +20,6 @@ public interface AdsService {
 
     Ads getAdsMe();
 
-    ResponseEntity<?> updateImage(Integer id, MultipartFile image);
+    String[] updateImage(Integer id, MultipartFile image);
 
 }

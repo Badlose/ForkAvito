@@ -9,6 +9,7 @@ import ru.skypro.homework.service.CommentsService;
 
 @Service
 public class CommentsServiceImpl implements CommentsService {
+
     @Override
     public Comments getComments(Integer id) {
         return null;
@@ -28,4 +29,5 @@ public class CommentsServiceImpl implements CommentsService {
     public Comment updateComment(Integer adId, Integer commentId, CreateOrUpdateComment comment) {
         return null;
     }
+
 }

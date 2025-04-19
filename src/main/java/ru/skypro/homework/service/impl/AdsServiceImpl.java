@@ -1,6 +1,5 @@
 package ru.skypro.homework.service.impl;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.Ad;
@@ -11,6 +10,7 @@ import ru.skypro.homework.service.AdsService;
 
 @Service
 public class AdsServiceImpl implements AdsService {
+
     @Override
     public Ads getAllAds() {
         return null;
@@ -28,7 +28,6 @@ public class AdsServiceImpl implements AdsService {
 
     @Override
     public void removeAd(Integer id) {
-
     }
 
     @Override
@@ -42,7 +41,8 @@ public class AdsServiceImpl implements AdsService {
     }
 
     @Override
-    public ResponseEntity<?> updateImage(Integer id, MultipartFile image) {
+    public String[] updateImage(Integer id, MultipartFile image) {
         return null;
     }
+
 }

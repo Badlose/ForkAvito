@@ -1,5 +1,10 @@
 package ru.skypro.homework.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -16,11 +21,31 @@ import ru.skypro.homework.service.AuthService;
 @CrossOrigin(value = "http://localhost:3000")
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "Авторизация", description = "API для авторизации пользователя")
 public class AuthController {
 
     private final AuthService authService;
 
+    /**
+     * Метод для авторизации пользователя
+     *
+     * @param login - объект, содержащий username и password
+     * @return HttpStatus
+     */
     @PostMapping("/login")
+    @Operation(summary = "Авторизация пользователя",
+            tags = {"Авторизация"},
+            operationId = "login",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Login.class))
+            ),
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "OK"),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized")
+            }
+
+    )
     public ResponseEntity<?> login(@RequestBody Login login) {
         if (authService.login(login.getUsername(), login.getPassword())) {
             return ResponseEntity.ok().build();
@@ -29,7 +54,26 @@ public class AuthController {
         }
     }
 
+    /**
+     * Метод для регистрации нового пользователя
+     *
+     * @param register - объект, содержащий информацию о новом пользователе
+     * @return HttpStatus
+     */
     @PostMapping("/register")
+    @Operation(summary = "Регистрация пользователя",
+            tags = {"Регистрация"},
+            operationId = "register",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Register.class))
+            ),
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Created"),
+                    @ApiResponse(responseCode = "400", description = "Bad Request")
+            }
+
+    )
     public ResponseEntity<?> register(@RequestBody Register register) {
         if (authService.register(register)) {
             return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -37,4 +81,5 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
+
 }
