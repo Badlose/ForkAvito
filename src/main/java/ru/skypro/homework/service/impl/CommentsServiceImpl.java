@@ -21,8 +21,8 @@ public class CommentsServiceImpl implements CommentsService {
     }
 
     @Override
-    public ResponseEntity<?> deleteComment(Integer adId, Integer commentId) {
-        return null;
+    public void deleteComment(Integer adId, Integer commentId) {
+
     }
 
     @Override

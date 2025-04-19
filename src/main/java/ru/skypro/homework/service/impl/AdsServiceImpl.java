@@ -17,7 +17,7 @@ public class AdsServiceImpl implements AdsService {
     }
 
     @Override
-    public Ad createOrUpdateAd(MultipartFile image, CreateOrUpdateAd updateAd) {
+    public Ad createNewAd(CreateOrUpdateAd updateAd, MultipartFile image) {
         return null;
     }
 
@@ -31,7 +31,7 @@ public class AdsServiceImpl implements AdsService {
     }
 
     @Override
-    public Ad updateAds(Integer id, CreateOrUpdateAd createOrUpdateAd) {
+    public Ad updateAd(Integer id, CreateOrUpdateAd createOrUpdateAd) {
         return null;
     }
 
@@ -41,7 +41,7 @@ public class AdsServiceImpl implements AdsService {
     }
 
     @Override
-    public String[] updateImage(Integer id, MultipartFile image) {
+    public MultipartFile updateImage(Integer id, MultipartFile image) {
         return null;
     }
 
