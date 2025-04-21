@@ -2,12 +2,10 @@ package ru.skypro.homework.entity;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
+@Table(name = "ads")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -26,4 +24,6 @@ public class AdEntity {
     private Integer price;
     @NonNull
     private String title;
+    @NonNull
+    private String description;
 }
