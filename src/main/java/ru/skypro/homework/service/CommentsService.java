@@ -1,9 +1,8 @@
 package ru.skypro.homework.service;
 
-import org.springframework.http.ResponseEntity;
-import ru.skypro.homework.dto.Comment;
-import ru.skypro.homework.dto.Comments;
-import ru.skypro.homework.dto.CreateOrUpdateComment;
+import ru.skypro.homework.dto.give.Comment;
+import ru.skypro.homework.dto.give.Comments;
+import ru.skypro.homework.dto.accept.CreateOrUpdateComment;
 
 public interface CommentsService {
 
