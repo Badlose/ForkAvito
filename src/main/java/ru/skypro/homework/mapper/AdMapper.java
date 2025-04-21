@@ -18,6 +18,8 @@ public interface AdMapper {
     @Mapping(target = "pk", ignore = true)
     @Mapping(target = "image", ignore = true)
     @Mapping(target = "author", ignore = true)
+    @Mapping(target = "user", ignore = true)
+    @Mapping(target = "comments", ignore = true)
     void toAdEntity(CreateOrUpdateAd ad, @MappingTarget AdEntity entity);
 
     @Mapping(source = "entity.price", target = "price", ignore = true)

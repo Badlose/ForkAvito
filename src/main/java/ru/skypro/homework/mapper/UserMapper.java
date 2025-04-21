@@ -21,6 +21,8 @@ public interface UserMapper {
     @Mapping(target = "password", ignore = true)
     @Mapping(target = "role", ignore = true)
     @Mapping(target = "image", ignore = true)
+    @Mapping(target = "ads", ignore = true)
+    @Mapping(target = "comments", ignore = true)
     void toUserEntity(UpdateUser updateUser, @MappingTarget UserEntity entity);
 
 }

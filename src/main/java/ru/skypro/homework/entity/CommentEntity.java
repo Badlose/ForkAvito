@@ -1,6 +1,8 @@
 package ru.skypro.homework.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import ru.skypro.homework.dto.give.Ad;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -28,4 +30,13 @@ public class CommentEntity {
     private Integer pk;
     @NonNull
     private String text;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnore
+    private UserEntity user;
+
+    @ManyToOne
+    @JoinColumn(name = "ad_id", nullable = false)
+    private AdEntity ad;
 }
