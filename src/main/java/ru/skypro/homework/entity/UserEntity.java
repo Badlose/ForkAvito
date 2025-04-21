@@ -7,6 +7,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Size;
 
 @Entity
+@Table(name = "users")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,6 +17,14 @@ public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    @NonNull
+    @Size(min = 4, max = 32)
+    private String username;
+
+    @NonNull
+    @Size(min = 8, max = 16)
+    private String password;
 
     @NonNull
     @Size(min = 3, max = 10)
