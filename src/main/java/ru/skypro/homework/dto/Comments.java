@@ -2,6 +2,7 @@ package ru.skypro.homework.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.NonNull;
 
 import java.util.List;
 
@@ -9,6 +10,8 @@ import java.util.List;
 @Schema(description = "ДТО для предоставления информации обо всех комментариях")
 public class Comments {
 
+    @NonNull
     private Integer count;
+    @NonNull
     private List<Comment> results;
 }
