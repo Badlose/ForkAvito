@@ -1,17 +1,15 @@
 package ru.skypro.homework.controller;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import ru.skypro.homework.TestObjectStorage.AuthControllerTestResources;
-import ru.skypro.homework.dto.Login;
-import ru.skypro.homework.dto.Register;
+import ru.skypro.homework.controller.TestObjectsForControllerTestStorage.AuthControllerTestResources;
+import ru.skypro.homework.dto.accept.Login;
+import ru.skypro.homework.dto.accept.Register;
 import ru.skypro.homework.service.AuthService;
 
 import static org.junit.jupiter.api.Assertions.*;

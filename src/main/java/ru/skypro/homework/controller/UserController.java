@@ -11,9 +11,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ru.skypro.homework.dto.NewPassword;
+import ru.skypro.homework.dto.accept.NewPassword;
 import ru.skypro.homework.dto.UpdateUser;
-import ru.skypro.homework.dto.User;
+import ru.skypro.homework.dto.give.User;
 import ru.skypro.homework.service.UserService;
 
 @Slf4j
@@ -108,15 +108,8 @@ public class UserController {
     @Operation(tags = {"Пользователи"},
             summary = "Обновление аватара авторизованного пользователя",
             operationId = "updateUserImage",
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    content = @Content(mediaType = "multipart/form-data",
-                            schema = @Schema(implementation = UpdateUser.class))
-            ),
             responses = {
-                    @ApiResponse(responseCode = "200",
-                            description = "OK",
-                            content = @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = UpdateUser.class))),
+                    @ApiResponse(responseCode = "200", description = "OK"),
                     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(mediaType = ""))
             }
     )

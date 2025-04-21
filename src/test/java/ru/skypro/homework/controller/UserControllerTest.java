@@ -1,18 +1,16 @@
 package ru.skypro.homework.controller;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
-import ru.skypro.homework.TestObjectStorage.UserControllerTestResources;
-import ru.skypro.homework.dto.NewPassword;
+import ru.skypro.homework.controller.TestObjectsForControllerTestStorage.UserControllerTestResources;
+import ru.skypro.homework.dto.accept.NewPassword;
 import ru.skypro.homework.dto.UpdateUser;
-import ru.skypro.homework.dto.User;
+import ru.skypro.homework.dto.give.User;
 import ru.skypro.homework.service.UserService;
 
 import static org.junit.jupiter.api.Assertions.*;

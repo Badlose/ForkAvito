@@ -5,10 +5,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.skypro.homework.TestObjectStorage.CommentsControllerTestResources;
-import ru.skypro.homework.dto.Comment;
-import ru.skypro.homework.dto.Comments;
-import ru.skypro.homework.dto.CreateOrUpdateComment;
+import ru.skypro.homework.controller.TestObjectsForControllerTestStorage.CommentsControllerTestResources;
+import ru.skypro.homework.dto.give.Comment;
+import ru.skypro.homework.dto.give.Comments;
+import ru.skypro.homework.dto.accept.CreateOrUpdateComment;
 import ru.skypro.homework.service.CommentsService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

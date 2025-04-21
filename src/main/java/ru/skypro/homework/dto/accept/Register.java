@@ -1,8 +1,9 @@
-package ru.skypro.homework.dto;
+package ru.skypro.homework.dto.accept;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NonNull;
+import ru.skypro.homework.dto.Role;
 
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
