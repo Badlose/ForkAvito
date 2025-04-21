@@ -7,11 +7,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
-import ru.skypro.homework.TestObjectStorage.AdsControllerTestResources;
-import ru.skypro.homework.dto.Ad;
-import ru.skypro.homework.dto.Ads;
-import ru.skypro.homework.dto.CreateOrUpdateAd;
-import ru.skypro.homework.dto.ExtendedAd;
+import ru.skypro.homework.controller.TestObjectsForControllerTestStorage.AdsControllerTestResources;
+import ru.skypro.homework.dto.give.Ad;
+import ru.skypro.homework.dto.give.Ads;
+import ru.skypro.homework.dto.accept.CreateOrUpdateAd;
+import ru.skypro.homework.dto.give.ExtendedAd;
 import ru.skypro.homework.service.AdsService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
