@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class CommentsControllerAdsControllerTest extends CommentsControllerTestResources {
+public class CommentsControllerTest extends CommentsControllerTestResources {
     @Mock
     private CommentsService service;
     @InjectMocks
