@@ -18,6 +18,8 @@ public interface CommentMapper {
     @Mapping(target = "authorFirstName", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "pk", ignore = true)
+    @Mapping(target = "user", ignore = true)
+    @Mapping(target = "ad", ignore = true)
     void toCommentEntity(CreateOrUpdateComment comment, @MappingTarget CommentEntity entity);
 
     List<Comment> toComment(List<CommentEntity> entity);

@@ -18,9 +18,13 @@ public interface AuthMapper {
     @Mapping(target = "phone", ignore = true)
     @Mapping(target = "role", ignore = true)
     @Mapping(target = "image", ignore = true)
+    @Mapping(target = "ads", ignore = true)
+    @Mapping(target = "comments", ignore = true)
     void toUserEntity(NewPassword password, @MappingTarget UserEntity entity);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "image", ignore = true)
+    @Mapping(target = "ads", ignore = true)
+    @Mapping(target = "comments", ignore = true)
     void toUserEntity(Register register, @MappingTarget UserEntity entity);
 }
