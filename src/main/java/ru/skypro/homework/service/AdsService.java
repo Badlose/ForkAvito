@@ -1,9 +1,9 @@
 package ru.skypro.homework.service;
 
 import org.springframework.web.multipart.MultipartFile;
+import ru.skypro.homework.dto.accept.CreateOrUpdateAd;
 import ru.skypro.homework.dto.give.Ad;
 import ru.skypro.homework.dto.give.Ads;
-import ru.skypro.homework.dto.accept.CreateOrUpdateAd;
 import ru.skypro.homework.dto.give.ExtendedAd;
 
 public interface AdsService {

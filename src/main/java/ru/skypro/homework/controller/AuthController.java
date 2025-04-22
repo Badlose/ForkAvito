@@ -26,12 +26,6 @@ public class AuthController {
 
     private final AuthService authService;
 
-    /**
-     * Метод для авторизации пользователя
-     *
-     * @param login - объект, содержащий username и password
-     * @return HttpStatus
-     */
     @PostMapping("/login")
     @Operation(summary = "Авторизация пользователя",
             tags = {"Авторизация"},
@@ -54,12 +48,6 @@ public class AuthController {
         }
     }
 
-    /**
-     * Метод для регистрации нового пользователя
-     *
-     * @param register - объект, содержащий информацию о новом пользователе
-     * @return HttpStatus
-     */
     @PostMapping("/register")
     @Operation(summary = "Регистрация пользователя",
             tags = {"Регистрация"},
