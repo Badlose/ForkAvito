@@ -14,8 +14,6 @@ public interface UserMapper {
     @Mapping(source = "username", target = "email")
     void toUser(UserEntity entity, @MappingTarget User user);
 
-    void toUpdatedUser(UserEntity entity, @MappingTarget UpdateUser updateUser);
-
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "username", ignore = true)
     @Mapping(target = "password", ignore = true)
