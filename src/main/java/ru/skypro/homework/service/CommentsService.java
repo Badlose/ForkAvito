@@ -1,8 +1,8 @@
 package ru.skypro.homework.service;
 
+import ru.skypro.homework.dto.accept.CreateOrUpdateComment;
 import ru.skypro.homework.dto.give.Comment;
 import ru.skypro.homework.dto.give.Comments;
-import ru.skypro.homework.dto.accept.CreateOrUpdateComment;
 
 public interface CommentsService {
 

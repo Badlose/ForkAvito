@@ -2,7 +2,6 @@ package ru.skypro.homework.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
-import ru.skypro.homework.dto.give.Comment;
 
 import javax.persistence.*;
 import java.util.List;

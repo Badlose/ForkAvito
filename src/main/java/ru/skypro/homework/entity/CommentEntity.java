@@ -2,7 +2,6 @@ package ru.skypro.homework.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
-import ru.skypro.homework.dto.give.Ad;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -28,6 +27,7 @@ public class CommentEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer pk;
+
     @NonNull
     private String text;
 

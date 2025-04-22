@@ -9,9 +9,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.skypro.homework.dto.accept.CreateOrUpdateComment;
 import ru.skypro.homework.dto.give.Comment;
 import ru.skypro.homework.dto.give.Comments;
-import ru.skypro.homework.dto.accept.CreateOrUpdateComment;
 import ru.skypro.homework.service.CommentsService;
 
 @Slf4j
@@ -24,12 +24,6 @@ public class CommentsController {
 
     private final CommentsService commentsService;
 
-    /**
-     * Метод для получения всех комментариев объявления
-     *
-     * @param id - уникальный идентификатор объявления
-     * @return Объект Comments, содержащий список комментариев данного объявления
-     */
     @GetMapping("{id}/comments")
     @Operation(summary = "Получение комментариев объявления",
             tags = {"Комментарии"},
@@ -47,13 +41,6 @@ public class CommentsController {
         return ResponseEntity.ok(commentsService.getComments(id));
     }
 
-    /**
-     * Метод для добавления нового комментария к объявлению
-     *
-     * @param id         - уникальный идентификатор объявления
-     * @param newComment - объект, содержащий информацию о новом комментарии
-     * @return Объект Comment, содержаций информациюю о новом добавленном комменраии
-     */
     @PostMapping("{id}/comments")
     @Operation(summary = "Добавление комментария к объявлению",
             tags = {"Комментарии"},
@@ -72,13 +59,6 @@ public class CommentsController {
         return ResponseEntity.ok(commentsService.addComment(id, newComment));
     }
 
-    /**
-     * Метод для удаления комментария
-     *
-     * @param adId      - уникальный идентификатор объявления
-     * @param commentId - уникальный идентификатор комментария
-     * @return HttpStatus
-     */
     @DeleteMapping("{adId}/comments/{commentId}")
     @Operation(summary = "Удаление комментария",
             tags = {"Комментарии"},
@@ -91,18 +71,10 @@ public class CommentsController {
             }
     )
     public void deleteComment(@RequestParam(required = true) Integer adId,
-                                           @RequestParam(required = true) Integer commentId) {
+                              @RequestParam(required = true) Integer commentId) {
         commentsService.deleteComment(adId, commentId);
     }
 
-    /**
-     * Метод для обновления уже существующего комментария
-     *
-     * @param adId            - уникальный идентификатор объявления
-     * @param commentId       - уникальный идентификатор комментария
-     * @param updatedComment- объект, содержащий информацию об обновленном комментарии
-     * @return Объект Comment, содержаций информациюю об обновленном комментарии
-     */
     @PatchMapping("{adId}/comments/{commentId}")
     @Operation(summary = "Обновление комментария",
             tags = {"Комментарии"},

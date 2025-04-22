@@ -22,15 +22,15 @@ public interface AdMapper {
     @Mapping(target = "comments", ignore = true)
     void toAdEntity(CreateOrUpdateAd ad, @MappingTarget AdEntity entity);
 
-    @Mapping(source = "entity.price", target = "price", ignore = true)
-    @Mapping(source = "entity.title", target = "title", ignore = true)
+    @Mapping(source = "updateAd.price", target = "price")
+    @Mapping(source = "updateAd.title", target = "title")
     void toAd(CreateOrUpdateAd updateAd, AdEntity entity, @MappingTarget Ad ad);
 
-    @Mapping(source = "entity.image", target = "image", ignore = true)
-    @Mapping(source = "entity.firstName", target = "authorFirstName")
-    @Mapping(source = "entity.lastName", target = "authorLastName")
-    @Mapping(source = "entity.username", target = "email")
-    void toExtendedAd(UserEntity entity, AdEntity ad, @MappingTarget ExtendedAd extendedAd);
+    @Mapping(source = "adEntity.image", target = "image")
+    @Mapping(source = "userEntity.firstName", target = "authorFirstName")
+    @Mapping(source = "userEntity.lastName", target = "authorLastName")
+    @Mapping(source = "userEntity.username", target = "email")
+    void toExtendedAd(UserEntity userEntity, AdEntity adEntity, @MappingTarget ExtendedAd extendedAd);
 
     void toAd(AdEntity entity, @MappingTarget Ad ad);
 
@@ -40,4 +40,5 @@ public interface AdMapper {
         List<Ad> adsDTO = toAdList(ads);
         return new Ads(count, adsDTO);
     }
+
 }
