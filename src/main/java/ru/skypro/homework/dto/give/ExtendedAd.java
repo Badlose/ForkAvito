@@ -2,28 +2,29 @@ package ru.skypro.homework.dto.give;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import lombok.NonNull;
+
+import javax.validation.constraints.NotBlank;
 
 @Data
 @Schema(description = "ДТО для предоставления расширенной информации об объявлении и авторе")
 public class ExtendedAd {
 
-    @NonNull
+    @NotBlank(message = "Primary key is required")
     private Integer pk;
-    @NonNull
+    @NotBlank(message = "Author firstname is required")
     private String authorFirstName;
-    @NonNull
+    @NotBlank(message = "Author lastname is required")
     private String authorLastName;
-    @NonNull
+    @NotBlank(message = "Description is required")
     private String description;
-    @NonNull
+    @NotBlank(message = "Email is required")
     private String email;
-    @NonNull
+    @NotBlank(message = "Image is required")
     private String image;
-    @NonNull
+    @NotBlank(message = "Phone number is required")
     private String phone;
-    @NonNull
+    @NotBlank(message = "Price is required")
     private Integer price;
-    @NonNull
+    @NotBlank(message = "Title is required")
     private String title;
 }

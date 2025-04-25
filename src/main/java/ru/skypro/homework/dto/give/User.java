@@ -2,25 +2,26 @@ package ru.skypro.homework.dto.give;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import lombok.NonNull;
 import ru.skypro.homework.dto.Role;
+
+import javax.validation.constraints.NotBlank;
 
 @Data
 @Schema(description = "ДТО для получения информации об авторизованном пользователе")
 public class User {
 
-    @NonNull
+    @NotBlank(message = "User id is required")
     private Integer id;
-    @NonNull
+    @NotBlank(message = "Email is required")
     private String email;
-    @NonNull
+    @NotBlank(message = "User firstname is required")
     private String firstName;
-    @NonNull
+    @NotBlank(message = "User lastname is required")
     private String lastName;
-    @NonNull
+    @NotBlank(message = "Phone number is required")
     private String phone;
-    @NonNull
+    @NotBlank(message = "Role is required")
     private Role role;
-    @NonNull
+    @NotBlank(message = "Image is required")
     private String image;
 }

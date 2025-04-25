@@ -2,8 +2,8 @@ package ru.skypro.homework.dto.accept;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import lombok.NonNull;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 @Data
@@ -11,11 +11,12 @@ import javax.validation.constraints.Size;
 public class NewPassword {
 
     @Schema(description = "Текущий пароль")
-    @NonNull
-    @Size(min = 8, max = 16)
+    @NotBlank(message = "Current password is required")
+    @Size(min = 8, max = 16, message = "Current password must be between 8 and 16 characters")
     private String currentPassword;
-    @NonNull
+
     @Schema(description = "Новый пароль")
-    @Size(min = 8, max = 16)
+    @NotBlank(message = "New password is required")
+    @Size(min = 8, max = 16, message = "Current password must be between 8 and 16 characters")
     private String newPassword;
 }

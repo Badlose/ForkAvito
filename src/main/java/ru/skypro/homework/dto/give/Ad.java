@@ -2,20 +2,21 @@ package ru.skypro.homework.dto.give;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import lombok.NonNull;
+
+import javax.validation.constraints.NotBlank;
 
 @Data
 @Schema(description = "ДТО для предоставления информации об объявлении")
 public class Ad {
 
-    @NonNull
+    @NotBlank(message = "Author is required")
     private Integer author;
-    @NonNull
+    @NotBlank(message = "Image is required")
     private String image;
-    @NonNull
+    @NotBlank(message = "Primary key is required")
     private Integer pk;
-    @NonNull
+    @NotBlank(message = "Price is required")
     private Integer price;
-    @NonNull
+    @NotBlank(message = "Title is required")
     private String title;
 }

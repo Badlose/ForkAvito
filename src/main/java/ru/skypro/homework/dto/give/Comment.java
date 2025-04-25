@@ -2,22 +2,23 @@ package ru.skypro.homework.dto.give;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import lombok.NonNull;
+
+import javax.validation.constraints.NotBlank;
 
 @Data
 @Schema(description = "ДТО для предоставления информации о комментарии")
 public class Comment {
 
-    @NonNull
+    @NotBlank(message = "Author is required")
     private Integer author;
-    @NonNull
+    @NotBlank(message = "Author image is required")
     private String authorImage;
-    @NonNull
+    @NotBlank(message = "Author firstname is required")
     private String authorFirstName;
-    @NonNull
+    @NotBlank(message = "Creation time is required")
     private Long createdAt;
-    @NonNull
+    @NotBlank(message = "Primary key is required")
     private Integer pk;
-    @NonNull
+    @NotBlank(message = "Text is required")
     private String text;
 }
