@@ -1,7 +1,10 @@
 package ru.skypro.homework.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.List;
@@ -14,19 +17,20 @@ import java.util.List;
 @Builder
 public class AdEntity {
 
-    @NonNull
+    @Column(name = "author", nullable = false)
     private Integer author;
-    @NonNull
+    @Column(name = "image", nullable = false)
     private String image;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "pk", nullable = false)
     private Integer pk;
-    @NonNull
+    @Column(name = "price", nullable = false)
     private Integer price;
-    @NonNull
+    @Column(name = "title", nullable = false)
     private String title;
-    @NonNull
+    @Column(name = "description", nullable = false)
     private String description;
 
     @ManyToOne
@@ -35,6 +39,8 @@ public class AdEntity {
     private UserEntity user;
 
     @OneToMany(mappedBy = "ad", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "comment_id")
     private List<CommentEntity> comments;
+
 
 }

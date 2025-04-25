@@ -40,8 +40,8 @@ public class AuthController {
             }
 
     )
-    public ResponseEntity<?> login(@RequestBody Login login) {
-        if (authService.login(login.getUsername(), login.getPassword())) {
+    public ResponseEntity<?> login(@RequestBody Login login) {              // @Valid
+        if (authService.login(login)) {
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -62,7 +62,7 @@ public class AuthController {
             }
 
     )
-    public ResponseEntity<?> register(@RequestBody Register register) {
+    public ResponseEntity<?> register(@RequestBody Register register) {         // @Valid
         if (authService.register(register)) {
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } else {

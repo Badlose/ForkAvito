@@ -1,10 +1,12 @@
 package ru.skypro.homework.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.skypro.homework.dto.Role;
 
 import javax.persistence.*;
-import javax.validation.constraints.Size;
 import java.util.List;
 
 @Entity
@@ -17,33 +19,36 @@ public class UserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
     private Integer id;
 
-    @NonNull
-    @Size(min = 4, max = 32)
+    @Column(name = "username", nullable = false)
     private String username;
 
-    @NonNull
-    @Size(min = 8, max = 16)
+    @Column(name = "password", nullable = false)
     private String password;
 
-    @NonNull
-    @Size(min = 3, max = 10)
+    @Column(name = "first_name", nullable = false)
     private String firstName;
-    @NonNull
-    @Size(min = 3, max = 10)
+
+    @Column(name = "last_name", nullable = false)
     private String lastName;
-    @NonNull
+
+    @Column(name = "phone", nullable = false)
     private String phone;
-    @NonNull
+
+    @Column(name = "role", nullable = false)
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @Column(name = "image")             //  nullable = true?
     private String image;
 
+    @Column(name = "ads")
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<AdEntity> ads;
 
+    @Column(name = "id")
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<CommentEntity> comments;
 

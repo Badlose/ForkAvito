@@ -9,7 +9,7 @@ CREATE TABLE if NOT EXISTS users (
     last_name CHARACTER VARYING(255) not null,
     phone CHARACTER VARYING(255) not null,
     role CHARACTER VARYING(255) not null,
-    image CHARACTER VARYING(255) not null
+    image CHARACTER VARYING(255)
 );
 
 CREATE TABLE if NOT EXISTS ads (
@@ -19,7 +19,8 @@ CREATE TABLE if NOT EXISTS ads (
     price INTEGER not null,
     title CHARACTER VARYING(255) not null,
     description CHARACTER VARYING(255) not null,
-    user_id INTEGER REFERENCES users (id) not null
+    user_id INTEGER REFERENCES users (id) not null,
+    comment_id INTEGER REFERENCES users (id)
 );
 
 CREATE TABLE if NOT EXISTS comments (
