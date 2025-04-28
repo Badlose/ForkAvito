@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Data
 @Schema(description = "ДТО для предоставления расширенной информации об объявлении и авторе")
@@ -19,7 +20,7 @@ public class ExtendedAd {
     private String description;
     @NotBlank(message = "Email is required")
     private String email;
-    @NotBlank(message = "Image is required")
+    @NotNull
     private String image;
     @NotBlank(message = "Phone number is required")
     private String phone;

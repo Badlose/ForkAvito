@@ -5,6 +5,7 @@ import lombok.Data;
 import ru.skypro.homework.dto.Role;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Data
 @Schema(description = "ДТО для получения информации об авторизованном пользователе")
@@ -22,6 +23,6 @@ public class User {
     private String phone;
     @NotBlank(message = "Role is required")
     private Role role;
-    @NotBlank(message = "Image is required")
+    @NotNull
     private String image;
 }

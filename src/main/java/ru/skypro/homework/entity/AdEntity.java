@@ -17,15 +17,14 @@ import java.util.List;
 @Builder
 public class AdEntity {
 
-    @Column(name = "author", nullable = false)
-    private Integer author;
-    @Column(name = "image", nullable = false)
-    private String image;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "pk", nullable = false)
     private Integer pk;
+    @Column(name = "author", nullable = false)
+    private Integer author;
+    @Column(name = "image")
+    private String image;
     @Column(name = "price", nullable = false)
     private Integer price;
     @Column(name = "title", nullable = false)
@@ -39,7 +38,6 @@ public class AdEntity {
     private UserEntity user;
 
     @OneToMany(mappedBy = "ad", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JoinColumn(name = "comment_id")
     private List<CommentEntity> comments;
 
 

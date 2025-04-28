@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.Instant;
 
 @Entity
 @Table(name = "comments")
@@ -16,19 +17,18 @@ import javax.persistence.*;
 @Builder
 public class CommentEntity {
 
-    @Column(name = "author", nullable = false)
-    private Integer author;
-    @Column(name = "author_image", nullable = false)
-    private String authorImage;
-    @Column(name = "author_first_name", nullable = false)
-    private String authorFirstName;
-    @Column(name = "created_at", nullable = false)
-    private Long createdAt;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "pk", nullable = false)
     private Integer pk;
+    @Column(name = "author", nullable = false)
+    private Integer author;
+    @Column(name = "author_image")
+    private String authorImage;
+    @Column(name = "author_first_name", nullable = false)
+    private String authorFirstName;
+    @Column(name = "created_at", nullable = false)
+    private Instant createdAt;
 
     @Column(name = "text", nullable = false)
     private String text;

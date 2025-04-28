@@ -28,6 +28,9 @@ public class UserEntity {
     @Column(name = "password", nullable = false)
     private String password;
 
+//    @Column(name = "enabled", nullable = false)
+//    private boolean enabled;
+
     @Column(name = "first_name", nullable = false)
     private String firstName;
 
@@ -41,7 +44,7 @@ public class UserEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @Column(name = "image")             //  nullable = true?
+    @Column(name = "image")
     private String image;
 
     @Column(name = "ads")
