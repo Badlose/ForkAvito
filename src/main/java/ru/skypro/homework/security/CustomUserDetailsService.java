@@ -1,6 +1,7 @@
 package ru.skypro.homework.security;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import ru.skypro.homework.entity.UserEntity;
 import ru.skypro.homework.repository.UserRepository;
 
+import javax.sql.DataSource;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,18 +30,19 @@ public class CustomUserDetailsService implements UserDetailsService {
         UserEntity userEntity = userRepository.findByUsername(username).orElseThrow(() ->
                 new UsernameNotFoundException(String.format("Пользователь %s не найден", username)));
 
-        return new User(
+        return new CustomUserDetails(
                 userEntity.getUsername(),
                 userEntity.getPassword(),
-                getAuthority(userEntity)
+                userEntity.getFirstName(),
+                userEntity.getLastName(),
+                userEntity.getPhone(),
+                userEntity.getRole().toString(),
+                userEntity.getImage()
         );
-
     }
 
     private Collection<? extends GrantedAuthority> getAuthority(UserEntity userEntity) {
 
-        GrantedAuthority authority = new SimpleGrantedAuthority(userEntity.getRole().name());
-
-        return List.of(authority);
+        return List.of(new SimpleGrantedAuthority("ROLE_" + userEntity.getRole().name()));
     }
 }
