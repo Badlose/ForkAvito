@@ -1,16 +1,13 @@
 package ru.skypro.homework.security;
 
-import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.stereotype.Component;
 import ru.skypro.homework.entity.UserEntity;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 @Component
 public class CustomUserDetails implements UserDetails {
@@ -31,6 +28,16 @@ public class CustomUserDetails implements UserDetails {
     public CustomUserDetails() {
     }
 
+    public CustomUserDetails(UserEntity userEntity) {
+        this.username = userEntity.getUsername();
+        this.password = userEntity.getPassword();
+        this.firstName = userEntity.getFirstName();
+        this.lastName = userEntity.getLastName();
+        this.phone = userEntity.getPhone();
+        this.role = getCustomAuthorities(userEntity.getRole().toString());
+        this.image = userEntity.getImage();
+    }
+
     public CustomUserDetails(
             String username,
             String password,
@@ -45,13 +52,7 @@ public class CustomUserDetails implements UserDetails {
 //            boolean credentialsNonExpired,
 //            boolean enabled
     ) {
-        this.username = username;
-        this.password = password;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.phone = phone;
-        this.role = getCustomAuthorities(role);
-        this.image = image;
+
 //        this.notExpired = notExpired;
 //        this.notLocked = notLocked;
 //        this.credentialsNonExpired = credentialsNonExpired;

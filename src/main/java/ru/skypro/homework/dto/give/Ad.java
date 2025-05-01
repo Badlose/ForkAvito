@@ -4,19 +4,20 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Data
 @Schema(description = "ДТО для предоставления информации об объявлении")
 public class Ad {
 
-    @NotBlank(message = "Author is required")
+    @NotEmpty(message = "Author is required")
     private Integer author;
-    @NotNull
+//    @NotNull
     private String image;
-    @NotBlank(message = "Primary key is required")
+    @NotEmpty(message = "Primary key is required")
     private Integer pk;
-    @NotBlank(message = "Price is required")
+    @NotEmpty(message = "Price is required")
     private Integer price;
     @NotBlank(message = "Title is required")
     private String title;

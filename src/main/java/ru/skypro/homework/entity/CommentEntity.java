@@ -27,19 +27,35 @@ public class CommentEntity {
     private String authorImage;
     @Column(name = "author_first_name", nullable = false)
     private String authorFirstName;
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at")
     private Instant createdAt;
 
     @Column(name = "text", nullable = false)
     private String text;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id")
     @JsonIgnore
     private UserEntity user;
 
 
     @ManyToOne
-    @JoinColumn(name = "ad_id", nullable = false)
+    @JoinColumn(name = "ad_id")
+    @JsonIgnore
     private AdEntity ad;
+
+
+    @Override
+    public String toString() {
+        return "CommentEntity{" +
+                "pk=" + pk +
+                ", author=" + author +
+                ", authorImage='" + authorImage + '\'' +
+                ", authorFirstName='" + authorFirstName + '\'' +
+                ", createdAt=" + createdAt +
+                ", text='" + text + '\'' +
+                ", user=" + user +
+                ", ad=" + ad +
+                '}';
+    }
 }

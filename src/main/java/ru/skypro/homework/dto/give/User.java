@@ -5,13 +5,14 @@ import lombok.Data;
 import ru.skypro.homework.dto.Role;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Data
 @Schema(description = "ДТО для получения информации об авторизованном пользователе")
 public class User {
 
-    @NotBlank(message = "User id is required")
+    @NotEmpty(message = "User id is required")
     private Integer id;
     @NotBlank(message = "Email is required")
     private String email;
@@ -21,8 +22,8 @@ public class User {
     private String lastName;
     @NotBlank(message = "Phone number is required")
     private String phone;
-    @NotBlank(message = "Role is required")
+    @NotEmpty(message = "Role is required")
     private Role role;
-    @NotNull
+//    @NotNull
     private String image;
 }

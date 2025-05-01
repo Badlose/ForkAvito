@@ -8,10 +8,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ru.skypro.homework.dto.accept.CreateOrUpdateComment;
 import ru.skypro.homework.dto.give.Comment;
 import ru.skypro.homework.dto.give.Comments;
+import ru.skypro.homework.security.CustomUserDetails;
 import ru.skypro.homework.service.CommentsService;
 
 @Slf4j
@@ -25,6 +28,7 @@ public class CommentsController {
     private final CommentsService commentsService;
 
     @GetMapping("{id}/comments")
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Получение комментариев объявления",
             tags = {"Комментарии"},
             operationId = "getComments",
@@ -42,6 +46,7 @@ public class CommentsController {
     }
 
     @PostMapping("{id}/comments")
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Добавление комментария к объявлению",
             tags = {"Комментарии"},
             operationId = "addComment",
@@ -54,12 +59,14 @@ public class CommentsController {
                     @ApiResponse(responseCode = "404", description = "Not found", content = @Content(mediaType = ""))
             }
     )
-    public ResponseEntity<Comment> addComment(@RequestParam(required = true) Integer id,
+    public ResponseEntity<Comment> addComment(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                              @RequestParam(required = true) Integer id,
                                               @RequestBody CreateOrUpdateComment newComment) {
-        return ResponseEntity.ok(commentsService.addComment(id, newComment));
+        return ResponseEntity.ok(commentsService.addComment(userDetails, id, newComment));
     }
 
     @DeleteMapping("{adId}/comments/{commentId}")
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Удаление комментария",
             tags = {"Комментарии"},
             operationId = "deleteComment",
@@ -70,12 +77,14 @@ public class CommentsController {
                     @ApiResponse(responseCode = "404", description = "Not found", content = @Content(mediaType = ""))
             }
     )
-    public void deleteComment(@RequestParam(required = true) Integer adId,
+    public void deleteComment(@AuthenticationPrincipal CustomUserDetails userDetails,
+                              @RequestParam(required = true) Integer adId,
                               @RequestParam(required = true) Integer commentId) {
-        commentsService.deleteComment(adId, commentId);
+        commentsService.deleteComment(userDetails, adId, commentId);
     }
 
     @PatchMapping("{adId}/comments/{commentId}")
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Обновление комментария",
             tags = {"Комментарии"},
             operationId = "updateComment",
@@ -89,10 +98,11 @@ public class CommentsController {
                     @ApiResponse(responseCode = "404", description = "Not found", content = @Content(mediaType = ""))
             }
     )
-    public ResponseEntity<Comment> updateComment(@RequestParam(required = true) Integer adId,
+    public ResponseEntity<Comment> updateComment(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                 @RequestParam(required = true) Integer adId,
                                                  @RequestParam(required = true) Integer commentId,
                                                  @RequestBody CreateOrUpdateComment updatedComment) {
-        return ResponseEntity.ok(commentsService.updateComment(adId, commentId, updatedComment));
+        return ResponseEntity.ok(commentsService.updateComment(userDetails, adId, commentId, updatedComment));
     }
 
 }

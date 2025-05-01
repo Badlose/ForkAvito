@@ -4,13 +4,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Data
 @Schema(description = "ДТО для предоставления расширенной информации об объявлении и авторе")
 public class ExtendedAd {
 
-    @NotBlank(message = "Primary key is required")
+    @NotEmpty(message = "Primary key is required")
     private Integer pk;
     @NotBlank(message = "Author firstname is required")
     private String authorFirstName;
@@ -20,11 +21,11 @@ public class ExtendedAd {
     private String description;
     @NotBlank(message = "Email is required")
     private String email;
-    @NotNull
+//    @NotNull
     private String image;
     @NotBlank(message = "Phone number is required")
     private String phone;
-    @NotBlank(message = "Price is required")
+    @NotEmpty(message = "Price is required")
     private Integer price;
     @NotBlank(message = "Title is required")
     private String title;

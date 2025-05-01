@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import ru.skypro.homework.dto.Role;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -36,6 +37,6 @@ public class Register {
     @Pattern(regexp = "\\+7\\s?\\(?\\d{3}\\)?\\s?\\d{3}-?\\d{2}-?\\d{2}", message = "Неверный формат номера телефона")
     private String phone;
 
-    @NotBlank(message = "Role is required")
+    @NotEmpty(message = "Role is required")
     private Role role;
 }
