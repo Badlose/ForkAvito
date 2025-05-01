@@ -33,12 +33,24 @@ public class AdEntity {
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id")
     @JsonIgnore
     private UserEntity user;
 
     @OneToMany(mappedBy = "ad", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<CommentEntity> comments;
 
+    @Override
+    public String toString() {
+        return "AdEntity{" +
+                "pk=" + pk +
+                ", author=" + author +
+                ", image='" + image + '\'' +
+                ", price=" + price +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
 
+                ", comments=" + comments +
+                '}';
+    }
 }

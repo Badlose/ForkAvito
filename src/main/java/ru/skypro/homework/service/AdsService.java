@@ -5,21 +5,22 @@ import ru.skypro.homework.dto.accept.CreateOrUpdateAd;
 import ru.skypro.homework.dto.give.Ad;
 import ru.skypro.homework.dto.give.Ads;
 import ru.skypro.homework.dto.give.ExtendedAd;
+import ru.skypro.homework.security.CustomUserDetails;
 
 public interface AdsService {
 
     Ads getAllAds();
 
-    Ad createNewAd(CreateOrUpdateAd updateAd, MultipartFile image);
+    Ad createNewAd(CustomUserDetails userDetails, CreateOrUpdateAd updateAd, MultipartFile image);
 
     ExtendedAd getAdById(Integer id);
 
-    void removeAd(Integer id);
+    void removeAd(CustomUserDetails userDetails, Integer id);
 
-    Ad updateAd(Integer id, CreateOrUpdateAd createOrUpdateAd);
+    Ad updateAd(CustomUserDetails userDetails, Integer id, CreateOrUpdateAd createOrUpdateAd);
 
-    Ads getAdsMe();
+    Ads getAdsMe(CustomUserDetails userDetails);
 
-    MultipartFile updateImage(Integer id, MultipartFile image);
+    MultipartFile updateImage(CustomUserDetails userDetails, Integer id, MultipartFile image);
 
 }

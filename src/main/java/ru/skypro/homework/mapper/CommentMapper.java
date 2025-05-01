@@ -7,20 +7,25 @@ import ru.skypro.homework.dto.accept.CreateOrUpdateComment;
 import ru.skypro.homework.dto.give.Comment;
 import ru.skypro.homework.dto.give.Comments;
 import ru.skypro.homework.entity.CommentEntity;
+import ru.skypro.homework.entity.UserEntity;
 
 import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface CommentMapper {
 
-    @Mapping(target = "author", ignore = true)
-    @Mapping(target = "authorImage", ignore = true)
-    @Mapping(target = "authorFirstName", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "pk", ignore = true)
+
     @Mapping(target = "user", ignore = true)
     @Mapping(target = "ad", ignore = true)
-    void toCommentEntity(CreateOrUpdateComment comment, @MappingTarget CommentEntity entity);
+    @Mapping(target = "pk", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(source = "user.id", target = "author")
+    @Mapping(source = "user.image", target = "authorImage")
+    @Mapping(source = "user.firstName", target = "authorFirstName")
+    void toCommentEntity(UserEntity user, CreateOrUpdateComment comment, @MappingTarget CommentEntity entity);
+
+
+    void toComment(CommentEntity entity, @MappingTarget Comment comment);
 
     List<Comment> toComment(List<CommentEntity> entity);
 

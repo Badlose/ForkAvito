@@ -3,6 +3,8 @@ package ru.skypro.homework.service.impl;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
@@ -25,23 +27,24 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository repository;
     private final PasswordEncoder encoder;
     private final AuthMapper mapper;
-    private final JdbcUserDetailsManager manager;
+//    private final JdbcUserDetailsManager manager;
     private final CustomUserDetailsService service;
+    private final AuthenticationManager manager;
 
     @Override
     public boolean login(Login login) {
 
-        if (!manager.userExists(login.getUsername())) {
+        if (!repository.existsByUsername(login.getUsername())) {
             return false;
         }
-        UserDetails userDetails = service.loadUserByUsername(login.getUsername());
+        CustomUserDetails userDetails = service.loadUserByUsername(login.getUsername());
         return encoder.matches(login.getPassword(), userDetails.getPassword());
     }
 
     @Override
     @Transactional
     public boolean register(Register register) {
-        if (manager.userExists(register.getUsername())) {
+        if (repository.existsByUsername(register.getUsername())) {
             return false;
         }
 //        service.loadUserByUsername(register.getUsername());
