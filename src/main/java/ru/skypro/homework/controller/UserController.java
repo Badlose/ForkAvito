@@ -9,11 +9,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.UpdateUser;
 import ru.skypro.homework.dto.accept.NewPassword;
 import ru.skypro.homework.dto.give.User;
+import ru.skypro.homework.security.CustomUserDetails;
 import ru.skypro.homework.service.UserService;
 
 @Slf4j
@@ -27,6 +31,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/set_password")
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Обновление пароля",
             tags = {"Пользователи"},
             operationId = "setPassword",
@@ -40,12 +45,13 @@ public class UserController {
                     @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(mediaType = ""))
             }
     )
-    public ResponseEntity<?> setPassword(@RequestBody NewPassword newPassword) {
-        userService.setPassword(newPassword);
-        return ResponseEntity.ok("Password successfully changed");
+    public void setPassword(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                         @RequestBody NewPassword newPassword) {
+        userService.setPassword(userDetails, newPassword);
     }
 
     @GetMapping("/me")
+    @PreAuthorize("isAuthenticated()")
     @Operation(tags = {"Пользователи"},
             summary = "Получение информации об авторизованном пользователе",
             operationId = "getUser",
@@ -57,11 +63,12 @@ public class UserController {
                     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(mediaType = ""))
             }
     )
-    public ResponseEntity<User> getUser() {
-        return ResponseEntity.ok(userService.getUserSelfInfo());
+    public ResponseEntity<User> getUser(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        return ResponseEntity.ok(userService.getUserSelfInfo(userDetails));
     }
 
     @PatchMapping("/me")
+    @PreAuthorize("isAuthenticated()")
     @Operation(tags = {"Пользователи"},
             summary = "Обновление информации об авторизованном пользователе",
             operationId = "updateUser",
@@ -77,11 +84,13 @@ public class UserController {
                     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(mediaType = ""))
             }
     )
-    public ResponseEntity<UpdateUser> updateUser(@RequestBody UpdateUser updateUser) {
-        return ResponseEntity.ok(userService.updateUser(updateUser));
+    public ResponseEntity<UpdateUser> updateUser(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                 @RequestBody UpdateUser updateUser) {
+        return ResponseEntity.ok(userService.updateUser(userDetails, updateUser));
     }
 
     @PatchMapping(value = "/me/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("isAuthenticated()")
     @Operation(tags = {"Пользователи"},
             summary = "Обновление аватара авторизованного пользователя",
             operationId = "updateUserImage",
@@ -90,9 +99,10 @@ public class UserController {
                     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(mediaType = ""))
             }
     )
-    public ResponseEntity<?> updateUserImage(@RequestBody MultipartFile image) {
-        userService.updateUserImage(image);
-        return ResponseEntity.ok("Image successfully updated");
+    public void updateUserImage(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                @RequestBody MultipartFile image) {
+        userService.updateUserImage(userDetails, image);
+
     }
 
 }
