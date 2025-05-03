@@ -1,11 +1,11 @@
 package ru.skypro.homework.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.skypro.homework.dto.Role;
+import uk.co.jemos.podam.common.PodamExclude;
 
 import javax.persistence.*;
 import java.util.List;
@@ -13,7 +13,6 @@ import java.util.List;
 @Entity
 @Table(name = "users")
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class UserEntity {
@@ -28,9 +27,6 @@ public class UserEntity {
 
     @Column(name = "password", nullable = false)
     private String password;
-
-//    @Column(name = "enabled", nullable = false)
-//    private boolean enabled;
 
     @Column(name = "first_name", nullable = false)
     private String firstName;
@@ -48,27 +44,12 @@ public class UserEntity {
     @Column(name = "image")
     private String image;
 
-    //    @Column(name = "ads")
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @PodamExclude
     private List<AdEntity> ads;
 
-//    @Column(name = "id")
-    @OneToMany(mappedBy = "user",fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @PodamExclude
     private List<CommentEntity> comments;
 
-    @Override
-    public String toString() {
-        return "UserEntity{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", phone='" + phone + '\'' +
-                ", role=" + role +
-                ", image='" + image + '\'' +
-                ", ads=" + ads +
-                ", comments=" + comments +
-                '}';
-    }
 }

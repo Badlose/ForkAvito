@@ -1,6 +1,7 @@
 package ru.skypro.homework.dto.give;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
 import lombok.Data;
 import ru.skypro.homework.dto.Role;
 
@@ -9,6 +10,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Data
+@Builder
 @Schema(description = "ДТО для получения информации об авторизованном пользователе")
 public class User {
 

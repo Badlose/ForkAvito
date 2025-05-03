@@ -90,7 +90,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + role);
+        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(role.toString());
 //        Stream.of(new SimpleGrantedAuthority(user.getRole().toString())).collect(Collectors.toList());
         return Collections.singletonList(authority);
     }

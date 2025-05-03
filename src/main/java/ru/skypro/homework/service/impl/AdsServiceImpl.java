@@ -1,7 +1,7 @@
 package ru.skypro.homework.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -11,8 +11,8 @@ import ru.skypro.homework.dto.give.Ads;
 import ru.skypro.homework.dto.give.ExtendedAd;
 import ru.skypro.homework.entity.AdEntity;
 import ru.skypro.homework.entity.UserEntity;
-import ru.skypro.homework.exception.CommentNotFoundException;
-import ru.skypro.homework.mapper.AdMapper;
+import ru.skypro.homework.exception.AdNotFoundException;
+import ru.skypro.homework.exception.UserNotFoundException;
 import ru.skypro.homework.repository.AdRepository;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.security.CustomUserDetails;
@@ -20,146 +20,92 @@ import ru.skypro.homework.service.AdsService;
 
 import java.util.List;
 
+import static ru.skypro.homework.mapper.AdMapper.*;
+
 @Service
 @RequiredArgsConstructor
 public class AdsServiceImpl implements AdsService {
 
     private final AdRepository adRepository;
     private final UserRepository userRepository;
-    private final AdMapper adMapper;
-
 
     @Override
     @Transactional
     public Ads getAllAds() {
-
         List<AdEntity> adEntityList = adRepository.findAll();
-
-        Integer count = adEntityList.size();
-
-        return AdMapper.staticToAds(count, adEntityList);
+        return toAds(adEntityList);
     }
 
     @Override
     @Transactional
     public Ad createNewAd(CustomUserDetails userDetails, CreateOrUpdateAd createAd, MultipartFile image) {
+        UserEntity userEntity = getUserEntity(userDetails);
 
-        String username = userDetails.getUsername();
-        UserEntity userEntity = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException(String.format("User {} not found", username)));
-
-        AdEntity entity = new AdEntity();
-
-        adMapper.toAdEntity(userEntity, createAd, entity);
-
+        AdEntity entity = createAdEntity(userEntity, createAd);
         entity.setUser(userEntity);
 
         entity.setImage(image.getName()); // логика работы с картинками
 
         adRepository.save(entity);
-
-        Ad ad = new Ad();
-
-        adMapper.toAd(entity, ad);
-
-        return ad;
+        return toAd(createAd, entity);
     }
 
     @Override
     @Transactional
     public ExtendedAd getAdById(Integer id) {
-        AdEntity entity = adRepository.findById(id)
-                .orElseThrow(() -> new CommentNotFoundException.AdNotFoundException(
-                        String.format("Ad with id {} not found", id)
-                ));
-
-        Integer authorId = entity.getAuthor();
-
-        UserEntity userEntity = userRepository.findById(authorId)
-                .orElseThrow(() -> new UsernameNotFoundException(String.format("User not found for Ad id {}", id)));
-
-        ExtendedAd extendedAd = new ExtendedAd();
-
-        adMapper.toExtendedAd(userEntity, entity, extendedAd);
-
-        return extendedAd;
+        AdEntity entity = adRepository.findByPk(id);
+        return toExtendedAd(entity);
     }
 
     @Override
     @Transactional
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('ROLE_USER') and #id == getAdAuthorId(#id))")
     public void removeAd(CustomUserDetails userDetails, Integer id) {
-
-        String username = userDetails.getUsername();
-
-        UserEntity userEntity = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User with username " + username + " not found."));
-
-        List<AdEntity> ads = userEntity.getAds();
-
-        AdEntity adFromDB = adRepository.findById(id)
-                .orElseThrow(() -> new UsernameNotFoundException(String.format("User not found for Ad id {}", id)));
-
-        if (ads.contains(adFromDB)) {
-            adRepository.deleteById(id);
-        }
-
-
-        // а кто вообще-то может уджалять??
+        adRepository.deleteById(id);
     }
 
     @Override
     @Transactional
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('ROLE_USER') and #id == getAdAuthorId(#id))")
     public Ad updateAd(CustomUserDetails userDetails, Integer id, CreateOrUpdateAd updateAd) {
 
-        String username = userDetails.getUsername();
+        AdEntity adFromDB = getAdEntity(id);
 
-        UserEntity userEntity = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User with username " + username + " not found."));
+        adFromDB = toAdEntity(adFromDB, updateAd);
+        adRepository.save(adFromDB);
 
-        List<AdEntity> ads = userEntity.getAds();
-
-        AdEntity adFromDB = adRepository.findById(id)
-                .orElseThrow(() -> new UsernameNotFoundException(String.format("User not found for Ad id {}", id)));
-
-        if (ads.contains(adFromDB)) {
-
-            adMapper.toAdEntity(userEntity, updateAd, adFromDB);
-
-            adRepository.save(adFromDB);
-        } else {
-            throw new RuntimeException();       // дописать
-        }
-
-        Ad adToReturn = new Ad();
-
-        adMapper.toAd(updateAd, adFromDB, adToReturn);
-
-        return adToReturn;
-
+        return toAd(adFromDB);
     }
 
     @Override
     @Transactional
     public Ads getAdsMe(CustomUserDetails userDetails) {
-
-        String username = userDetails.getUsername();
-
-        UserEntity userEntity = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User with username " + username + " not found."));
-
-        Integer userId = userEntity.getId();
-
-        List<AdEntity> adEntityList = adRepository.findByUserId(userId);
-
-        Integer count = adEntityList.size();
-
-        return AdMapper.staticToAds(count, adEntityList);
+        UserEntity userEntity = getUserEntity(userDetails);
+        List<AdEntity> adEntityList = userEntity.getAds();
+        return toAds(adEntityList);
     }
 
     @Override
     @Transactional
     public MultipartFile updateImage(CustomUserDetails userDetails, Integer id, MultipartFile image) {
+
         return null;
+    }
+
+    private AdEntity getAdEntity(Integer id) {
+        return adRepository.findById(id)
+                .orElseThrow(() -> new AdNotFoundException(String.format("Ad %d not found", id)));
+    }
+
+
+    private UserEntity getUserEntity(CustomUserDetails userDetails) {
+        String username = userDetails.getUsername();
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException(String.format("User %s not found", username)));
+    }
+
+    private Integer getAdAuthorId(Integer id) {
+        return getAdEntity(id).getUser().getId();
     }
 
 }

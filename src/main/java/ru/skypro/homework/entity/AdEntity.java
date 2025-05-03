@@ -1,10 +1,9 @@
 package ru.skypro.homework.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import uk.co.jemos.podam.common.PodamExclude;
+import uk.co.jemos.podam.common.PodamStrategyValue;
 
 import javax.persistence.*;
 import java.util.List;
@@ -21,8 +20,6 @@ public class AdEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "pk", nullable = false)
     private Integer pk;
-    @Column(name = "author", nullable = false)
-    private Integer author;
     @Column(name = "image")
     private String image;
     @Column(name = "price", nullable = false)
@@ -35,22 +32,13 @@ public class AdEntity {
     @ManyToOne
     @JoinColumn(name = "user_id")
     @JsonIgnore
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @PodamExclude
     private UserEntity user;
 
     @OneToMany(mappedBy = "ad", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @PodamExclude
     private List<CommentEntity> comments;
 
-    @Override
-    public String toString() {
-        return "AdEntity{" +
-                "pk=" + pk +
-                ", author=" + author +
-                ", image='" + image + '\'' +
-                ", price=" + price +
-                ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
-
-                ", comments=" + comments +
-                '}';
-    }
 }

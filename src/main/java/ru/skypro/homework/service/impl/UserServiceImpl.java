@@ -1,8 +1,6 @@
 package ru.skypro.homework.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -12,70 +10,51 @@ import ru.skypro.homework.dto.UpdateUser;
 import ru.skypro.homework.dto.accept.NewPassword;
 import ru.skypro.homework.dto.give.User;
 import ru.skypro.homework.entity.UserEntity;
+import ru.skypro.homework.exception.UserNotFoundException;
 import ru.skypro.homework.mapper.AuthMapper;
-import ru.skypro.homework.mapper.UserMapper;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.security.CustomUserDetails;
-import ru.skypro.homework.security.CustomUserDetailsService;
 import ru.skypro.homework.service.UserService;
+
+import static ru.skypro.homework.mapper.AuthMapper.*;
+import static ru.skypro.homework.mapper.UserMapper.*;
+
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private final UserRepository repository;
-    private final UserMapper mapper;
-    private final AuthMapper authMapper;
-    private final CustomUserDetailsService service;
+    private final UserRepository userRepository;
 
     @Override
     @Transactional
     public void setPassword(CustomUserDetails userDetails, NewPassword newPassword) {
 
-        String username = userDetails.getUsername();
+        UserEntity userEntity = getUserEntity(userDetails);
 
-        UserEntity userEntity = repository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User with username " + username + " not found."));
+        String password = new BCryptPasswordEncoder().encode(newPassword.getNewPassword());
 
-        String password = newPassword.getNewPassword();
+        userEntity.setPassword(password);
 
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-
-        newPassword.setNewPassword(encoder.encode(password));
-
-        authMapper.toUserEntity(newPassword, userEntity);
-
-        repository.save(userEntity);
+        userRepository.save(userEntity);
     }
 
     @Override
     @Transactional
     public User getUserSelfInfo(CustomUserDetails userDetails) {
-
-        String username = userDetails.getUsername();
-
-        UserEntity entity = repository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User with username " + username + " not found."));
-
-        User user = new User();
-
-        mapper.toUser(entity, user);
-
-        return user;
+        UserEntity entity = getUserEntity(userDetails);
+        return toUser(entity);
     }
 
     @Override
     @Transactional
     public UpdateUser updateUser(CustomUserDetails userDetails, UpdateUser updateUser) {
 
-        String username = userDetails.getUsername();
+        UserEntity entityFromDb = getUserEntity(userDetails);
 
-        UserEntity entity = repository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User with username " + username + " not found."));
+        entityFromDb = toUserEntity(entityFromDb, updateUser);
 
-        mapper.toUserEntity(updateUser, entity);
-
-        repository.save(entity);
+        userRepository.save(entityFromDb);
 
         return updateUser;
     }
@@ -83,16 +62,14 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void updateUserImage(CustomUserDetails userDetails, MultipartFile image) {
+        getUserEntity(userDetails);
+    }
 
+    @Transactional
+    private UserEntity getUserEntity(CustomUserDetails userDetails) {
         String username = userDetails.getUsername();
-
-        UserEntity entity = repository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User with username " + username + " not found."));
-
-        CustomUserDetails user = service.loadUserByUsername(username); // вот так же тоже можно было
-
-
-
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException(String.format("User %s not found", username)));
     }
 
 }
