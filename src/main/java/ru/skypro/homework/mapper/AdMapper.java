@@ -1,63 +1,107 @@
 package ru.skypro.homework.mapper;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 import ru.skypro.homework.dto.accept.CreateOrUpdateAd;
 import ru.skypro.homework.dto.give.Ad;
 import ru.skypro.homework.dto.give.Ads;
 import ru.skypro.homework.dto.give.ExtendedAd;
-import ru.skypro.homework.dto.give.User;
 import ru.skypro.homework.entity.AdEntity;
 import ru.skypro.homework.entity.UserEntity;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-@Mapper(componentModel = "spring")
+//@Mapper(componentModel = "spring")
 public interface AdMapper {
 
-    @Mapping(target = "pk", ignore = true)
-    @Mapping(source = "user.id", target = "author")
-    @Mapping(target = "image", ignore = true)
-    @Mapping(target = "user", ignore = true)
-    @Mapping(target = "comments", ignore = true)
-    void toAdEntity(UserEntity user, CreateOrUpdateAd ad, @MappingTarget AdEntity entity);
+//    @Mapping(target = "pk", ignore = true)
+//    @Mapping(target = "image", ignore = true)
+//    @Mapping(target = "user", ignore = true)
+//    @Mapping(target = "comments", ignore = true)
+//    void toAdEntity(UserEntity user, CreateOrUpdateAd ad, @MappingTarget AdEntity entity);
 
-    @Mapping(source = "updateAd.price", target = "price")
-    @Mapping(source = "updateAd.title", target = "title")
-    void toAd(CreateOrUpdateAd updateAd, AdEntity entity, @MappingTarget Ad ad);
+static AdEntity createAdEntity(UserEntity userEntity, CreateOrUpdateAd ad) {
+    return AdEntity.builder()
+            .image(userEntity.getImage())
+            .price(ad.getPrice())
+            .title(ad.getTitle())
+            .description(ad.getDescription())
+            .user(userEntity)
+            .build();
+};
+    static AdEntity toAdEntity(AdEntity adEntity, CreateOrUpdateAd ad) {
+        return AdEntity.builder()
+                .pk(adEntity.getPk())
+                .image(adEntity.getImage())
+                .price(ad.getPrice())
+                .title(ad.getTitle())
+                .description(ad.getDescription())
+                .user(adEntity.getUser())
+                .comments(adEntity.getComments())
+                .build();
+    };
 
-    @Mapping(source = "adEntity.image", target = "image")
-    @Mapping(source = "userEntity.firstName", target = "authorFirstName")
-    @Mapping(source = "userEntity.lastName", target = "authorLastName")
-    @Mapping(source = "userEntity.username", target = "email")
-    void toExtendedAd(UserEntity userEntity, AdEntity adEntity, @MappingTarget ExtendedAd extendedAd);
 
-    void toAd(AdEntity entity, @MappingTarget Ad ad);
+//    @Mapping(source = "updateAd.price", target = "price")
+//    @Mapping(source = "updateAd.title", target = "title")
+//    void toAd(CreateOrUpdateAd updateAd, AdEntity entity, @MappingTarget Ad ad);
 
-    List<Ad> toAdList(List<AdEntity> entityList);
-
-    default Ads toAds(Integer count, List<AdEntity> ads) {
-        List<Ad> adsDTO = toAdList(ads);
-        return new Ads(count, adsDTO);
+    static Ad toAd(CreateOrUpdateAd updateAd, AdEntity entity) {
+        return Ad.builder()
+                .author(entity.getUser().getId())
+                .image(entity.getImage())
+                .pk(entity.getPk())
+                .price(updateAd.getPrice())
+                .title(updateAd.getTitle())
+                .build();
     }
 
-    static Ads staticToAds(Integer count, List<AdEntity> ads) {
+//    @Mapping(source = "adEntity.image", target = "image")
+//    @Mapping(source = "userEntity.firstName", target = "authorFirstName")
+//    @Mapping(source = "userEntity.lastName", target = "authorLastName")
+//    @Mapping(source = "userEntity.username", target = "email")
+//    void toExtendedAd(UserEntity userEntity, AdEntity adEntity, @MappingTarget ExtendedAd extendedAd);
 
-        List<Ad> adList = ads.stream()
-                .map(adEntity -> {
-                    Ad ad = new Ad();
-                    ad.setPk(adEntity.getPk());
-                    ad.setAuthor(adEntity.getAuthor());
-                    ad.setImage(adEntity.getImage());
-                    ad.setPrice(adEntity.getPrice());
-                    ad.setTitle(adEntity.getTitle());
-                    return ad;
-                }).collect(Collectors.toList());
+    static ExtendedAd toExtendedAd(AdEntity adEntity) {
+        return ExtendedAd.builder()
+                .pk(adEntity.getPk())
+                .authorFirstName(adEntity.getUser().getFirstName())
+                .authorLastName(adEntity.getUser().getFirstName())
+                .description(adEntity.getDescription())
+                .email(adEntity.getUser().getUsername())
+                .image(adEntity.getImage())
+                .phone(adEntity.getUser().getPhone())
+                .price(adEntity.getPrice())
+                .title(adEntity.getTitle())
+                .build();
+    }
+//    void toAd(AdEntity entity, @MappingTarget Ad ad);
 
-        return new Ads(count, adList);
+    static Ad toAd(AdEntity entity) {
+        return Ad.builder()
+                .author(entity.getUser().getId())
+                .image(entity.getImage())
+                .pk(entity.getPk())
+                .price(entity.getPrice())
+                .title(entity.getTitle())
+                .build();
+    }
+
+//    List<Ad> toAdList(List<AdEntity> entityList);
+//
+//    default Ads toAds(Integer count, List<AdEntity> ads) {
+//        List<Ad> adsDTO = toAdList(ads);
+//        return new Ads(count, adsDTO);
+//    }
+
+    static Ads toAds(List<AdEntity> ads) {
+
+        List<Ad> adList = new ArrayList<>();
+
+        for (AdEntity adEntity : ads) {
+            adList.add(toAd(adEntity));
+        }
+
+        return new Ads(adList.size(), adList);
     }
 
 }

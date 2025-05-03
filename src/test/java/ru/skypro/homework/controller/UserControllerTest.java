@@ -1,12 +1,16 @@
 //package ru.skypro.homework.controller;
 //
+//import lombok.RequiredArgsConstructor;
 //import org.junit.jupiter.api.Test;
 //import org.junit.jupiter.api.extension.ExtendWith;
 //import org.mockito.InjectMocks;
 //import org.mockito.Mock;
 //import org.mockito.junit.jupiter.MockitoExtension;
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.http.HttpStatus;
 //import org.springframework.http.ResponseEntity;
 //import org.springframework.web.multipart.MultipartFile;
+//import ru.skypro.NewTypeTesting.TestHelper;
 //import ru.skypro.homework.controller.TestObjectsForControllerTestStorage.UserControllerTestResources;
 //import ru.skypro.homework.dto.accept.NewPassword;
 //import ru.skypro.homework.dto.UpdateUser;
@@ -17,7 +21,9 @@
 //import static org.mockito.Mockito.*;
 //
 //@ExtendWith(MockitoExtension.class)
-//public class UserControllerTest extends UserControllerTestResources {
+//@RequiredArgsConstructor
+//public class UserControllerTest {
+//    private final TestHelper helper;
 //    @Mock
 //    private UserService service;
 //    @InjectMocks
@@ -25,8 +31,9 @@
 //
 //    @Test
 //    void shouldSetPassword() {
-//        NewPassword newPassword = getTestNewPassword();
-//        ResponseEntity<?> expected = ResponseEntity.ok().body("Password successfully changed");
+//        NewPassword newPassword = TestHelper.getNewPassword();
+//
+//        ResponseEntity<?> expected = ResponseEntity.status(HttpStatus.OK).build();
 //
 //        doNothing().when(service).setPassword(newPassword);
 //        ResponseEntity<?> actual = controller.setPassword(newPassword);

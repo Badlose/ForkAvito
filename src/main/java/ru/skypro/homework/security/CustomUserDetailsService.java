@@ -29,8 +29,4 @@ public class CustomUserDetailsService implements UserDetailsService {
         return new CustomUserDetails(userEntity);
     }
 
-    private Collection<? extends GrantedAuthority> getAuthority(UserEntity userEntity) {
-
-        return List.of(new SimpleGrantedAuthority("ROLE_" + userEntity.getRole().name()));
-    }
 }
