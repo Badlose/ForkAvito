@@ -1,6 +1,7 @@
 package ru.skypro.homework.dto.give;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -9,12 +10,12 @@ import javax.validation.constraints.NotNull;
 import java.time.Instant;
 
 @Data
+@Builder
 @Schema(description = "ДТО для предоставления информации о комментарии")
 public class Comment {
 
     @NotEmpty(message = "Author is required")
     private Integer author;
-//    @NotNull(message = "Author image is required")
     private String authorImage;
     @NotBlank(message = "Author firstname is required")
     private String authorFirstName;

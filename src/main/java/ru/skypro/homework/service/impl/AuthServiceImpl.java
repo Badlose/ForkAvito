@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.stereotype.Service;
@@ -62,11 +63,9 @@ public class AuthServiceImpl implements AuthService {
 //        CustomUserDetails user = new CustomUserDetails(register.getUsername(), register.getPassword(), register.getFirstName(), register.getLastName(), register.getPhone(),
 //                register.getRole().toString());
 
-        UserEntity entity = new UserEntity();
-        mapper.toUserEntity(register, entity);
-        String encodedPassword = encoder.encode(register.getPassword());
+        register.setPassword(new BCryptPasswordEncoder().encode(register.getPassword()));
 
-        entity.setPassword(encodedPassword);
+        UserEntity entity = AuthMapper.createNewUser(register);
 
         repository.save(entity);
 

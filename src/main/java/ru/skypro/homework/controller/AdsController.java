@@ -66,8 +66,8 @@ public class AdsController {
             }
     )
     public Ad addAd(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                    @RequestPart("properties") CreateOrUpdateAd createAd,
-                                    @RequestPart("image") MultipartFile image) {
+                    @RequestPart("properties") CreateOrUpdateAd createAd,
+                    @RequestPart("image") MultipartFile image) {
         return adsService.createNewAd(userDetails, createAd, image);
     }
 
@@ -86,7 +86,7 @@ public class AdsController {
             }
     )
     public ExtendedAd getAds(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                             @RequestParam(required = true) Integer id) {
+                             @PathVariable(required = true) Integer id) {
         return adsService.getAdById(id);
     }
 
@@ -103,7 +103,7 @@ public class AdsController {
             }
     )
     public void removeAd(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                      @RequestParam(required = true) Integer id) {
+                         @PathVariable(required = true) Integer id) {
         adsService.removeAd(userDetails, id);
     }
 
@@ -123,8 +123,8 @@ public class AdsController {
             }
     )
     public Ad updateAds(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                        @RequestParam(required = true) Integer id,
-                                        @RequestBody CreateOrUpdateAd updateAd) {
+                        @PathVariable(required = true) Integer id,
+                        @RequestBody CreateOrUpdateAd updateAd) {
         return adsService.updateAd(userDetails, id, updateAd);
     }
 
@@ -161,8 +161,8 @@ public class AdsController {
             }
     )
     public MultipartFile updateImage(@AuthenticationPrincipal CustomUserDetails userDetails, // byte[]
-                                                     @RequestParam(required = true) Integer id,
-                                                     @RequestBody MultipartFile image) {
+                                     @PathVariable(required = true) Integer id,
+                                     @RequestBody MultipartFile image) {
         return adsService.updateImage(userDetails, id, image);
     }
 
