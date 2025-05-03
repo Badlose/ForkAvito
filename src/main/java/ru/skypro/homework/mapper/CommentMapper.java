@@ -1,8 +1,5 @@
 package ru.skypro.homework.mapper;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 import ru.skypro.homework.dto.accept.CreateOrUpdateComment;
 import ru.skypro.homework.dto.give.Comment;
 import ru.skypro.homework.dto.give.Comments;
@@ -14,16 +11,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-@Mapper(componentModel = "spring")
 public interface CommentMapper {
-
-//    @Mapping(target = "user", ignore = true)
-//    @Mapping(target = "ad", ignore = true)
-//    @Mapping(target = "pk", ignore = true)
-//    @Mapping(target = "createdAt", ignore = true)
-//    @Mapping(source = "user.image", target = "authorImage")
-//    @Mapping(source = "user.firstName", target = "authorFirstName")
-//    CommentEntity toCommentEntity(UserEntity user, CreateOrUpdateComment comment);
 
     static CommentEntity createComment(UserEntity userEntity, AdEntity adFromDB, CreateOrUpdateComment comment) {
         return CommentEntity.builder()
@@ -36,8 +24,6 @@ public interface CommentMapper {
                 .build();
     }
 
-//    Comment toComment(CommentEntity entity);
-
     static Comment toComment(CommentEntity commentEntity) {
         return Comment.builder()
                 .author(commentEntity.getUser().getId())
@@ -49,7 +35,6 @@ public interface CommentMapper {
                 .build();
     }
 
-
     static Comments toComments(List<CommentEntity> commentList) {
         List<Comment> comments = new ArrayList<>();
         for (CommentEntity commentEntity : commentList) {
@@ -57,4 +42,5 @@ public interface CommentMapper {
         }
         return new Comments(comments.size(), comments);
     }
+
 }
