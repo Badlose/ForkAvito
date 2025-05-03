@@ -1,7 +1,6 @@
 package ru.skypro.homework.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,13 +10,12 @@ import ru.skypro.homework.dto.accept.NewPassword;
 import ru.skypro.homework.dto.give.User;
 import ru.skypro.homework.entity.UserEntity;
 import ru.skypro.homework.exception.UserNotFoundException;
-import ru.skypro.homework.mapper.AuthMapper;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.security.CustomUserDetails;
 import ru.skypro.homework.service.UserService;
 
-import static ru.skypro.homework.mapper.AuthMapper.*;
-import static ru.skypro.homework.mapper.UserMapper.*;
+import static ru.skypro.homework.mapper.UserMapper.toUser;
+import static ru.skypro.homework.mapper.UserMapper.toUserEntity;
 
 
 @Service
@@ -29,13 +27,9 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void setPassword(CustomUserDetails userDetails, NewPassword newPassword) {
-
         UserEntity userEntity = getUserEntity(userDetails);
-
         String password = new BCryptPasswordEncoder().encode(newPassword.getNewPassword());
-
         userEntity.setPassword(password);
-
         userRepository.save(userEntity);
     }
 
@@ -49,13 +43,9 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UpdateUser updateUser(CustomUserDetails userDetails, UpdateUser updateUser) {
-
         UserEntity entityFromDb = getUserEntity(userDetails);
-
         entityFromDb = toUserEntity(entityFromDb, updateUser);
-
         userRepository.save(entityFromDb);
-
         return updateUser;
     }
 

@@ -3,7 +3,6 @@ package ru.skypro.homework.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import uk.co.jemos.podam.common.PodamExclude;
-import uk.co.jemos.podam.common.PodamStrategyValue;
 
 import javax.persistence.*;
 import java.util.List;
