@@ -3,6 +3,7 @@ package ru.skypro.homework.entity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.skypro.homework.dto.Role;
 import uk.co.jemos.podam.common.PodamExclude;
 
@@ -13,6 +14,7 @@ import java.util.List;
 @Table(name = "users")
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class UserEntity {
 
