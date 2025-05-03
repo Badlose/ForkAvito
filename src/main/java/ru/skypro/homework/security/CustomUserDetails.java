@@ -19,6 +19,11 @@ public class CustomUserDetails implements UserDetails {
     private String phone;
     private Collection<? extends GrantedAuthority> role;
     private String image;
+//    private  boolean notExpired;
+//    private  boolean notLocked;
+//    private  boolean credentialsNonExpired;
+//    private  boolean enabled;
+
 
     public CustomUserDetails() {
     }
@@ -39,7 +44,32 @@ public class CustomUserDetails implements UserDetails {
             String firstName,
             String lastName,
             String phone,
+            String role,
+            String image
+
+//            boolean notExpired,
+//            boolean notLocked,
+//            boolean credentialsNonExpired,
+//            boolean enabled
+    ) {
+
+//        this.notExpired = notExpired;
+//        this.notLocked = notLocked;
+//        this.credentialsNonExpired = credentialsNonExpired;
+//        this.enabled = enabled;
+    }
+
+    public CustomUserDetails(
+            String username,
+            String password,
+            String firstName,
+            String lastName,
+            String phone,
             String role
+//            boolean notExpired,
+//            boolean notLocked,
+//            boolean credentialsNonExpired,
+//            boolean enabled
     ) {
         this.username = username;
         this.password = password;
@@ -47,6 +77,10 @@ public class CustomUserDetails implements UserDetails {
         this.lastName = lastName;
         this.phone = phone;
         this.role = getCustomAuthorities(role);
+//        this.notExpired = notExpired;
+//        this.notLocked = notLocked;
+//        this.credentialsNonExpired = credentialsNonExpired;
+//        this.enabled = enabled;
     }
 
     private Collection<? extends GrantedAuthority> getCustomAuthorities(String role) {
@@ -57,6 +91,7 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         SimpleGrantedAuthority authority = new SimpleGrantedAuthority(role.toString());
+//        Stream.of(new SimpleGrantedAuthority(user.getRole().toString())).collect(Collectors.toList());
         return Collections.singletonList(authority);
     }
 
@@ -72,22 +107,25 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
+        //логика проверки на истекший акк
         return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
+        //логика приверки на блок акка
         return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
+        //логика приверки на устаревшие креды
         return true;
     }
 
     @Override
     public boolean isEnabled() {
+        //логика приверки на активированный акк
         return true;
     }
-
 }

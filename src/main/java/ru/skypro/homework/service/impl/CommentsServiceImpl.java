@@ -2,8 +2,10 @@ package ru.skypro.homework.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.skypro.homework.dto.Role;
 import ru.skypro.homework.dto.accept.CreateOrUpdateComment;
 import ru.skypro.homework.dto.give.Comment;
 import ru.skypro.homework.dto.give.Comments;
@@ -13,12 +15,15 @@ import ru.skypro.homework.entity.UserEntity;
 import ru.skypro.homework.exception.AdNotFoundException;
 import ru.skypro.homework.exception.CommentNotFoundException;
 import ru.skypro.homework.exception.UserNotFoundException;
+import ru.skypro.homework.mapper.CommentMapper;
 import ru.skypro.homework.repository.AdRepository;
 import ru.skypro.homework.repository.CommentRepository;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.security.CustomUserDetails;
+import ru.skypro.homework.security.CustomUserDetailsService;
 import ru.skypro.homework.service.CommentsService;
 
+import java.time.Instant;
 import java.util.List;
 
 import static ru.skypro.homework.mapper.CommentMapper.*;

@@ -13,7 +13,7 @@ public interface AdsService {
 
     Ad createNewAd(CustomUserDetails userDetails, CreateOrUpdateAd updateAd, MultipartFile image);
 
-    ExtendedAd getAdById(Integer id);
+    ExtendedAd getAdById(Integer  id);
 
     void removeAd(CustomUserDetails userDetails, Integer id);
 

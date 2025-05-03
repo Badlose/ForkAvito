@@ -7,8 +7,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,6 +22,8 @@ import ru.skypro.homework.dto.give.ExtendedAd;
 import ru.skypro.homework.security.CustomUserDetails;
 import ru.skypro.homework.service.AdsService;
 
+import static org.springframework.http.HttpStatus.NO_CONTENT;
+
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
 @RestController
@@ -26,6 +31,7 @@ import ru.skypro.homework.service.AdsService;
 @RequestMapping("/ads")
 @Tag(name = "Объявления", description = "API для управления объявлениями")
 public class AdsController {
+
 
     private final AdsService adsService;
 
