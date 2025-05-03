@@ -7,7 +7,6 @@ import ru.skypro.homework.dto.Role;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
 @Data
 @Builder
@@ -26,6 +25,5 @@ public class User {
     private String phone;
     @NotEmpty(message = "Role is required")
     private Role role;
-//    @NotNull
     private String image;
 }

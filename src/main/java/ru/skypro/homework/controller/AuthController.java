@@ -28,7 +28,6 @@ public class AuthController {
 
     @PostMapping("/login")
     @Operation(summary = "Авторизация пользователя",
-            tags = {"Авторизация"},
             operationId = "login",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     content = @Content(mediaType = "application/json",
@@ -50,7 +49,6 @@ public class AuthController {
 
     @PostMapping("/register")
     @Operation(summary = "Регистрация пользователя",
-            tags = {"Регистрация"},
             operationId = "register",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     content = @Content(mediaType = "application/json",
