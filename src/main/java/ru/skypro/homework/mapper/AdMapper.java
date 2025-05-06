@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface AdMapper {
 
-    static AdEntity createAdEntity(UserEntity userEntity, CreateOrUpdateAd ad) {
+    static AdEntity toCreatedAdEntity(UserEntity userEntity, CreateOrUpdateAd ad) {
         return AdEntity.builder()
                 .image(userEntity.getImage())
                 .price(ad.getPrice())
@@ -48,7 +48,7 @@ public interface AdMapper {
         return ExtendedAd.builder()
                 .pk(adEntity.getPk())
                 .authorFirstName(adEntity.getUser().getFirstName())
-                .authorLastName(adEntity.getUser().getFirstName())
+                .authorLastName(adEntity.getUser().getLastName())
                 .description(adEntity.getDescription())
                 .email(adEntity.getUser().getUsername())
                 .image(adEntity.getImage())

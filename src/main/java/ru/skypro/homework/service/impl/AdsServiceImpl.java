@@ -41,7 +41,7 @@ public class AdsServiceImpl implements AdsService {
     public Ad createNewAd(CustomUserDetails userDetails, CreateOrUpdateAd createAd, MultipartFile image) {
         UserEntity userEntity = getUserEntity(userDetails);
 
-        AdEntity entity = createAdEntity(userEntity, createAd);
+        AdEntity entity = toCreatedAdEntity(userEntity, createAd);
         entity.setUser(userEntity);
 
         entity.setImage(image.getName()); // логика работы с картинками
@@ -53,7 +53,10 @@ public class AdsServiceImpl implements AdsService {
     @Override
     @Transactional
     public ExtendedAd getAdById(Integer id) {
-        AdEntity entity = adRepository.findByPk(id);
+        AdEntity entity = adRepository.findByPk(id).orElseThrow(() -> new AdNotFoundException(
+                String.format("Ad %d not found", id))
+        );
+
         return toExtendedAd(entity);
     }
 
