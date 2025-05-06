@@ -15,6 +15,7 @@ public interface CommentMapper {
 
     static CommentEntity createComment(UserEntity userEntity, AdEntity adFromDB, CreateOrUpdateComment comment) {
         return CommentEntity.builder()
+                .pk(null)
                 .authorImage(userEntity.getImage())
                 .authorFirstName(userEntity.getFirstName())
                 .createdAt(Instant.now())

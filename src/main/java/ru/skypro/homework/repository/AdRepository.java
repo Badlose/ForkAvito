@@ -5,13 +5,14 @@ import org.springframework.stereotype.Repository;
 import ru.skypro.homework.entity.AdEntity;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface AdRepository extends JpaRepository<AdEntity, Integer> {
 
-    List<AdEntity> findByUserId(Integer userId);
+    AdEntity findByUserId(Integer userId);
 
-    AdEntity findByPk(Integer pk);
+    Optional<AdEntity> findByPk(Integer pk);
 
 }
 
