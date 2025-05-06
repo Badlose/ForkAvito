@@ -5,6 +5,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import ru.skypro.homework.dto.accept.CreateOrUpdateAd;
 import ru.skypro.homework.dto.give.Ad;
 import ru.skypro.homework.dto.give.Ads;
+import ru.skypro.homework.dto.give.ExtendedAd;
 import ru.skypro.homework.entity.AdEntity;
 import ru.skypro.homework.entity.UserEntity;
 
@@ -35,7 +36,7 @@ public class AdMapperTest {
         CreateOrUpdateAd createOrUpdateAd = getCreateOrUpdateAd();
         UserEntity userEntity = getFullUserEntity();
 
-        AdEntity mappedAdEntity = createAdEntity(userEntity, createOrUpdateAd);
+        AdEntity mappedAdEntity = toCreatedAdEntity(userEntity, createOrUpdateAd);
 
         assertThat(mappedAdEntity).isNotNull();
         assertThat(mappedAdEntity.getTitle()).isEqualTo(createOrUpdateAd.getTitle());
@@ -46,7 +47,7 @@ public class AdMapperTest {
     @Test
     void shouldCorrectlyMapToAd() {
         AdEntity adEntity = getFullAdEntity();
-        System.out.println(adEntity);
+
         Ad ad = toAd(adEntity);
 
         assertThat(ad).isNotNull();
@@ -57,22 +58,22 @@ public class AdMapperTest {
         assertThat(ad.getPrice()).isEqualTo(adEntity.getPrice());
     }
 
-//    @Test
-//    void shouldCorrectlyMapToExtendedAd() {
-//        AdEntity adEntity = getFullAdEntity();
-//
-//        ExtendedAd extendedAd = toExtendedAd(adEntity);
-//
-//        assertThat(extendedAd).isNotNull();
-//        assertThat(extendedAd.getPk()).isEqualTo(adEntity.getPk());
-//        assertThat(extendedAd.getAuthorFirstName()).isEqualTo(adEntity.getUser().getFirstName());
-//        assertThat(extendedAd.getAuthorLastName()).isEqualTo(adEntity.getUser().getLastName());
-//        assertThat(extendedAd.getDescription()).isEqualTo(adEntity.getDescription());
-//        assertThat(extendedAd.getEmail()).isEqualTo(adEntity.getUser().getUsername());
-//        assertThat(extendedAd.getImage()).isEqualTo(adEntity.getImage());
-//        assertThat(extendedAd.getPrice()).isEqualTo(adEntity.getPrice());
-//        assertThat(extendedAd.getTitle()).isEqualTo(adEntity.getTitle());
-//    }
+    @Test
+    void shouldCorrectlyMapToExtendedAd() {
+        AdEntity adEntity = getFullAdEntity();
+
+        ExtendedAd extendedAd = toExtendedAd(adEntity);
+
+        assertThat(extendedAd).isNotNull();
+        assertThat(extendedAd.getPk()).isEqualTo(adEntity.getPk());
+        assertThat(extendedAd.getAuthorFirstName()).isEqualTo(adEntity.getUser().getFirstName());
+        assertThat(extendedAd.getAuthorLastName()).isEqualTo(adEntity.getUser().getLastName());
+        assertThat(extendedAd.getDescription()).isEqualTo(adEntity.getDescription());
+        assertThat(extendedAd.getEmail()).isEqualTo(adEntity.getUser().getUsername());
+        assertThat(extendedAd.getImage()).isEqualTo(adEntity.getImage());
+        assertThat(extendedAd.getPrice()).isEqualTo(adEntity.getPrice());
+        assertThat(extendedAd.getTitle()).isEqualTo(adEntity.getTitle());
+    }
 
     @Test
     void shouldCorrectlyMapAdEntityToAd() {
@@ -80,9 +81,6 @@ public class AdMapperTest {
         CreateOrUpdateAd updateAd = getCreateOrUpdateAd();
 
         Ad ad = toAd(updateAd, adEntity);
-
-        System.out.println(adEntity);
-        System.out.println(ad);
 
         assertThat(ad).isNotNull();
         assertThat(ad.getAuthor()).isEqualTo(adEntity.getUser().getId());

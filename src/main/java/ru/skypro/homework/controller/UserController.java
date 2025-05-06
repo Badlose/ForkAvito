@@ -101,7 +101,6 @@ public class UserController {
     public void updateUserImage(@AuthenticationPrincipal CustomUserDetails userDetails,
                                 @RequestBody MultipartFile image) {
         userService.updateUserImage(userDetails, image);
-
     }
 
 }
