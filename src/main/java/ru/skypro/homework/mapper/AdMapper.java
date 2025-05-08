@@ -1,5 +1,8 @@
 package ru.skypro.homework.mapper;
 
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.skypro.homework.dto.accept.CreateOrUpdateAd;
 import ru.skypro.homework.dto.give.Ad;
 import ru.skypro.homework.dto.give.Ads;
@@ -11,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface AdMapper {
+
+    static final Logger logger = LoggerFactory.getLogger(AdMapper.class);
 
     static AdEntity toCreatedAdEntity(UserEntity userEntity, CreateOrUpdateAd ad) {
         return AdEntity.builder()
@@ -45,6 +50,7 @@ public interface AdMapper {
     }
 
     static ExtendedAd toExtendedAd(AdEntity adEntity) {
+        logger.info("ExtendedAd was created");
         return ExtendedAd.builder()
                 .pk(adEntity.getPk())
                 .authorFirstName(adEntity.getUser().getFirstName())
