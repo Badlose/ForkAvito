@@ -7,20 +7,24 @@ import ru.skypro.homework.dto.give.Ads;
 import ru.skypro.homework.dto.give.ExtendedAd;
 import ru.skypro.homework.security.CustomUserDetails;
 
+import java.io.IOException;
+
 public interface AdsService {
 
     Ads getAllAds();
 
-    Ad createNewAd(CustomUserDetails userDetails, CreateOrUpdateAd updateAd, MultipartFile image);
+    Ad createNewAd(CustomUserDetails userDetails, CreateOrUpdateAd updateAd, MultipartFile image) throws IOException;
 
     ExtendedAd getAdById(Integer id);
 
-    void removeAd(CustomUserDetails userDetails, Integer id);
+    void removeAd(Integer id);
 
-    Ad updateAd(CustomUserDetails userDetails, Integer id, CreateOrUpdateAd createOrUpdateAd);
+    Ad updateAd(Integer id, CreateOrUpdateAd createOrUpdateAd);
 
     Ads getAdsMe(CustomUserDetails userDetails);
 
-    MultipartFile updateImage(CustomUserDetails userDetails, Integer id, MultipartFile image);
+    byte[] updateImage(Integer id, MultipartFile image) throws IOException;
+
+    byte[] getAdImage(String id);
 
 }

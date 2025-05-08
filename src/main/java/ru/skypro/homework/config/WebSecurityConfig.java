@@ -49,7 +49,7 @@ public class WebSecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of(frontUrl));
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -82,8 +82,7 @@ public class WebSecurityConfig {
                                         .mvcMatchers(AUTH_WHITELIST)
                                         .permitAll()
                                         .mvcMatchers("/ads/**", "/users/**")
-                                        .authenticated()
-                                        .mvcMatchers("/uploads/**").permitAll())
+                                        .authenticated())
                 .httpBasic(withDefaults());
         return http.build();
     }

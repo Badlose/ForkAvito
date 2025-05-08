@@ -17,7 +17,10 @@ import ru.skypro.homework.dto.UpdateUser;
 import ru.skypro.homework.dto.accept.NewPassword;
 import ru.skypro.homework.dto.give.User;
 import ru.skypro.homework.security.CustomUserDetails;
+import ru.skypro.homework.service.ImageService;
 import ru.skypro.homework.service.UserService;
+
+import java.io.IOException;
 
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
@@ -28,6 +31,7 @@ import ru.skypro.homework.service.UserService;
 public class UserController {
 
     private final UserService userService;
+    private final ImageService imageService;
 
     @PostMapping("/set_password")
     @PreAuthorize("isAuthenticated()")
@@ -99,8 +103,29 @@ public class UserController {
             }
     )
     public void updateUserImage(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                @RequestBody MultipartFile image) {
+                                @RequestBody MultipartFile image) throws IOException {
         userService.updateUserImage(userDetails, image);
     }
 
+//    @PostMapping("/upload")
+//    public String uploadImage(@AuthenticationPrincipal CustomUserDetails userDetails,
+//                              @RequestParam MultipartFile image) {
+//        return userService.uploadImage(userDetails, image);
+//    }
+
+    @GetMapping(value = "/images/{id}", produces = {
+            MediaType.IMAGE_PNG_VALUE,
+            MediaType.IMAGE_JPEG_VALUE,
+            MediaType.IMAGE_GIF_VALUE,
+            "image/*"
+    })
+    @PreAuthorize("isAuthenticated()")
+    public byte[] getImage(@PathVariable String id) {
+//        log.info("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" + id);
+        return userService.getUserImage(id);
+//        String mediaType = imageService.getMediaType(id);
+//        return ResponseEntity.ok()
+//                .contentType(MediaType.parseMediaType("application/octet-stream"))
+//                .body(bytesImage);
+    }
 }
