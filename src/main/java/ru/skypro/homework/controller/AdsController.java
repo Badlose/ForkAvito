@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,8 @@ import ru.skypro.homework.dto.give.Ads;
 import ru.skypro.homework.dto.give.ExtendedAd;
 import ru.skypro.homework.security.CustomUserDetails;
 import ru.skypro.homework.service.AdsService;
+
+import java.io.IOException;
 
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
@@ -42,7 +45,6 @@ public class AdsController {
             }
     )
     public Ads getAllAds() {
-        log.info("Метод getAllAds класса AdsController был вызван ");
         return adsService.getAllAds();
     }
 
@@ -61,7 +63,7 @@ public class AdsController {
     )
     public Ad addAd(@AuthenticationPrincipal CustomUserDetails userDetails,
                     @RequestPart("properties") CreateOrUpdateAd createAd,
-                    @RequestPart("image") MultipartFile image) {
+                    @RequestPart("image") MultipartFile image) throws IOException {
         return adsService.createNewAd(userDetails, createAd, image);
     }
 
@@ -98,7 +100,7 @@ public class AdsController {
     )
     public void removeAd(@AuthenticationPrincipal CustomUserDetails userDetails,
                          @PathVariable(required = true) Integer id) {
-        adsService.removeAd(userDetails, id);
+        adsService.removeAd(id);
     }
 
     @PatchMapping("{id}")
@@ -119,7 +121,7 @@ public class AdsController {
     public Ad updateAds(@AuthenticationPrincipal CustomUserDetails userDetails,
                         @PathVariable(required = true) Integer id,
                         @RequestBody CreateOrUpdateAd updateAd) {
-        return adsService.updateAd(userDetails, id, updateAd);
+        return adsService.updateAd(id, updateAd);
     }
 
     @GetMapping("/me")
@@ -154,11 +156,40 @@ public class AdsController {
                     @ApiResponse(responseCode = "404", description = "Not found", content = @Content(mediaType = ""))
             }
     )
-    public MultipartFile updateImage(@AuthenticationPrincipal CustomUserDetails userDetails, // byte[]
-                                     @PathVariable(required = true) Integer id,
-                                     @RequestBody MultipartFile image) {
-        return adsService.updateImage(userDetails, id, image);
+    public ResponseEntity<byte[]> updateImage(@AuthenticationPrincipal CustomUserDetails userDetails,
+                       @PathVariable(required = true) Integer id,
+                       @RequestBody MultipartFile image) throws IOException {
+        byte[] byteImage = adsService.updateImage(id, image);
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType("application/octet-stream"))
+                .body(byteImage);
     }
 
+    @GetMapping(value = "/images/{id}", produces = {
+            MediaType.IMAGE_PNG_VALUE,
+            MediaType.IMAGE_JPEG_VALUE,
+            MediaType.IMAGE_GIF_VALUE,
+            "image/*"
+    })
+    @PreAuthorize("isAuthenticated()")
+    public byte[] getImage(@PathVariable String id) {
+//        log.info("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" + id);
+        return adsService.getAdImage(id);
+//        String mediaType = imageService.getMediaType(id);
+//        return ResponseEntity.ok()
+//                .contentType(MediaType.parseMediaType("application/octet-stream"))
+//                .body(bytesImage);
+    }
+
+//    @GetMapping(value = "/{id}/{imageId}", produces = {
+//            MediaType.IMAGE_PNG_VALUE,
+//            MediaType.IMAGE_JPEG_VALUE,
+//            MediaType.IMAGE_GIF_VALUE,
+//            "image/*"
+//    })
+//    @PreAuthorize("isAuthenticated()")
+//    public byte[] getAdImage(@PathVariable String id, @PathVariable String imageUrl) {
+//        return adsService.getCurrentAdImage(id);
+//    }
 }
 
