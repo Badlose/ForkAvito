@@ -57,13 +57,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void updateUserImage(CustomUserDetails userDetails, MultipartFile image) throws IOException {
+    public void updateUserImage(CustomUserDetails userDetails, MultipartFile image) {
         UserEntity userEntity = getUserEntity(userDetails);
-        String imageUrl = "\\" + imageService.uploadUserImage(image, userEntity.getId());
+        String imageUrl = "/" + imageService.uploadUserImage(image, userEntity.getId());
+
 //        String trimmedImageUrl = "/users/images/" + imageUrl;
 //        String trimmedImageUrl = "/users/images" + imageUrl.substring(0, imageUrl.lastIndexOf(".") - 1);
         userEntity.setImage(imageUrl);
-        log.info("USERENTITY IMAGE             " + userEntity.getImage());
+//        log.info("USERENTITY IMAGE             " + userEntity.getImage());
 
         userRepository.save(userEntity);
     }
@@ -78,6 +79,7 @@ public class UserServiceImpl implements UserService {
     public byte[] getUserImage(String id) {
         return imageService.getUsersImageBytes(id);
     }
+
     @Transactional
     private UserEntity getUserEntity(CustomUserDetails userDetails) {
         String username = userDetails.getUsername();

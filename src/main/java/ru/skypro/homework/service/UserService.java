@@ -16,7 +16,7 @@ public interface UserService {
 
     UpdateUser updateUser(CustomUserDetails userDetails, UpdateUser updateUser);
 
-    void updateUserImage(CustomUserDetails userDetails, MultipartFile image) throws IOException;
+    void updateUserImage(CustomUserDetails userDetails, MultipartFile image);
 
     byte[] getUserImage(String id);
 

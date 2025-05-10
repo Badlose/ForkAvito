@@ -2,17 +2,21 @@ package ru.skypro.homework.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import ru.skypro.homework.dto.Role;
 import ru.skypro.homework.dto.accept.CreateOrUpdateAd;
 import ru.skypro.homework.dto.give.Ad;
 import ru.skypro.homework.dto.give.Ads;
 import ru.skypro.homework.dto.give.ExtendedAd;
 import ru.skypro.homework.entity.AdEntity;
 import ru.skypro.homework.entity.UserEntity;
+import ru.skypro.homework.exception.AccessNotAllowedException;
 import ru.skypro.homework.exception.AdNotFoundException;
+import ru.skypro.homework.exception.ImageUploadException;
 import ru.skypro.homework.exception.UserNotFoundException;
 import ru.skypro.homework.repository.AdRepository;
 import ru.skypro.homework.repository.UserRepository;
@@ -43,17 +47,13 @@ public class AdsServiceImpl implements AdsService {
 
     @Override
     @Transactional
-    public Ad createNewAd(CustomUserDetails userDetails, CreateOrUpdateAd createAd, MultipartFile image) throws IOException {
-
+    public Ad createNewAd(CustomUserDetails userDetails, CreateOrUpdateAd createAd, MultipartFile image) {
         UserEntity userEntity = getUserEntity(userDetails);
-
         AdEntity entity = toCreatedAdEntity(userEntity, createAd);
         entity.setUser(userEntity);
         adRepository.save(entity);
-
         String imageUrl = imageService.uploadAdImage(image, entity.getPk());
-        entity.setImage("\\" + imageUrl);
-
+        entity.setImage("/" + imageUrl);
         return toAd(createAd, entity);
     }
 
@@ -63,31 +63,46 @@ public class AdsServiceImpl implements AdsService {
         AdEntity entity = adRepository.findByPk(id).orElseThrow(() -> new AdNotFoundException(
                 String.format("Ad %d not found", id))
         );
-        ExtendedAd extendedAd = toExtendedAd(entity);
-
-        log.info(extendedAd.getImage());
-
-        return extendedAd;
+        return toExtendedAd(entity);
     }
 
     @Override
     @Transactional
-    @PreAuthorize("hasRole('ADMIN') or (hasRole('USER'))") // and #id == getAdAuthorId(#id))
-    public void removeAd(Integer id) {
-        adRepository.deleteById(id);
+    public void removeAd(Integer id) { //todo я  видел preAuthorize в сервисных классах
+        AdEntity adEntity = getAdEntity(id);
+        if (checkAuthority(adEntity)) {
+            adRepository.deleteById(id);
+        } else {
+            throw new AccessNotAllowedException("Вы не имеете права редактировать это объявление.");
+        }
+//        UserEntity userEntity = getUserEntityFromAuthentication();
+//        if (userEntity.getRole().equals(Role.ADMIN)) {
+//            adRepository.deleteById(id);
+//        }
+//
+//        //todo есть смысл пытаться разделять? чтоб не создавались объекты впустую
+//
+//        AdEntity adEntity = getAdEntity(id);
+//
+//        if (userEntity.getId().equals(adEntity.getUser().getId())) {
+//            adRepository.deleteById(id);
+//        } else {
+//            throw new AccessNotAllowedException("Вы не имеете права удалять это объявление.");
+//        }
+
     }
 
     @Override
     @Transactional
-    @PreAuthorize("hasRole('ADMIN') or (hasRole('USER'))") //and checkAdHasSuchAuthor() == true)
     public Ad updateAd(Integer id, CreateOrUpdateAd updateAd) {
-
-        AdEntity adFromDB = getAdEntity(id);
-
-        adFromDB = toAdEntity(adFromDB, updateAd);
-        adRepository.save(adFromDB);
-
-        return toAd(adFromDB);
+        AdEntity adEntity = getAdEntity(id);
+        if (checkAuthority(adEntity)) {
+            adEntity = toAdEntity(adEntity, updateAd);
+            adRepository.save(adEntity);
+            return toAd(adEntity);
+        } else {
+            throw new AccessNotAllowedException("Вы не имеете права редактировать это объявление.");
+        }
     }
 
     @Override
@@ -100,30 +115,52 @@ public class AdsServiceImpl implements AdsService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasRole('ADMIN') or (hasRole('USER'))") //and checkAdHasSuchAuthor() == true)
-    public byte[] updateImage(Integer id, MultipartFile image) throws IOException {
-
+    public byte[] updateImage(Integer id, MultipartFile image) {
         AdEntity adEntity = getAdEntity(id);
-        String imageUrl = imageService.uploadAdImage(image, id);
-
-        adEntity.setImage("\\" + imageUrl);
-
-        adRepository.save(adEntity);
-
-//        byte[] imageBytes;
-//        try {
-//            imageBytes = image.getBytes();
-//        } catch (IOException e) {
-//            throw new IncorrectImageException("Incorrect image");
+        if (checkAuthority(adEntity)) {
+            String imageUrl = imageService.uploadAdImage(image, id);
+            adEntity.setImage("/" + imageUrl);
+            adRepository.save(adEntity);
+            return imageService.getUpdatedImageBytes(imageUrl);
+        } else {
+            throw new AccessNotAllowedException("Вы не имеете права редактировать изображение этого объявления.");
+        }
+//        UserEntity userEntity = getUserEntityFromAuthentication();
+//        AdEntity adEntity = getAdEntity(id);
+//
+//        if (userEntity.getRole().equals(Role.ADMIN)) {
+//            String imageUrl = imageService.uploadAdImage(image, id);
+//            adEntity.setImage("/" + imageUrl);
+//            adRepository.save(adEntity);
+//            return imageService.getUpdatedImageBytes(imageUrl);
 //        }
-
-        return imageService.getUpdatedImageBytes(imageUrl);
+//        if (userEntity.getId().equals(adEntity.getUser().getId())) {
+//            String imageUrl = imageService.uploadAdImage(image, id);
+//            adEntity.setImage("/" + imageUrl);
+//            adRepository.save(adEntity);
+//            return imageService.getUpdatedImageBytes(imageUrl);
+//        } else {
+//            throw new AccessNotAllowedException("Вы не имеете права редактировать это объявление.");
+//        }
     }
 
     @Override
     @Transactional
     public byte[] getAdImage(String id) {
         return imageService.getAdsImageBytes(id);
+    }
+
+    private boolean checkAuthority(AdEntity adEntity) {
+        UserEntity userEntity = getUserEntityFromAuthentication();
+        return userEntity.getRole().equals(Role.ADMIN) ||
+                userEntity.getId().equals(adEntity.getUser().getId());
+    }
+
+    private UserEntity getUserEntityFromAuthentication() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException(String.format("User %s not found", username)));
     }
 
     private AdEntity getAdEntity(Integer id) {

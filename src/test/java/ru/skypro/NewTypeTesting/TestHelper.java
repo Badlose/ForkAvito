@@ -2,6 +2,9 @@ package ru.skypro.NewTypeTesting;
 
 import lombok.RequiredArgsConstructor;
 import org.mockito.Mockito;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.Role;
@@ -19,6 +22,7 @@ import uk.co.jemos.podam.api.PodamFactory;
 import uk.co.jemos.podam.api.PodamFactoryImpl;
 
 import java.time.Instant;
+import java.util.Collection;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
@@ -64,6 +68,15 @@ public class TestHelper {
         return mock(MultipartFile.class);
     }
 
+    public static MultipartFile getMultipartFileSemiStub() {
+        return new MockMultipartFile(
+                "image",
+                "test.jpg",
+                "image/jpeg",
+                "test image content".getBytes()
+        );
+    }
+
     public UserEntity saveUserEntity(UserEntity entity) {
         return userRepository.save(entity);
     }
@@ -71,6 +84,66 @@ public class TestHelper {
     public void deleteUserEntity(Integer id) {
         userRepository.deleteById(id);
     }
+
+
+
+
+
+
+
+
+    public static class TestAuthentication implements Authentication {
+
+        private final CustomUserDetails principal;
+        private boolean authenticated = true;
+
+        public TestAuthentication(CustomUserDetails principal) {
+            this.principal = principal;
+        }
+
+        @Override
+        public Collection<? extends GrantedAuthority> getAuthorities() {
+            return List.of();
+        }
+
+        @Override
+        public Object getCredentials() {
+            return null;
+        }
+
+        @Override
+        public Object getDetails() {
+            return null;
+        }
+
+        @Override
+        public Object getPrincipal() {
+            return this.principal;
+        }
+
+        @Override
+        public boolean isAuthenticated() {
+            return authenticated;
+        }
+
+        @Override
+        public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
+            this.authenticated = isAuthenticated;
+        }
+
+        @Override
+        public String getName() {
+            return principal.getUsername();
+        }
+    }
+
+
+
+
+
+
+
+
 
 
 

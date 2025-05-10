@@ -27,4 +27,5 @@ public class ExtendedAd {
     private Integer price;
     @NonNull
     private String title;
+
 }

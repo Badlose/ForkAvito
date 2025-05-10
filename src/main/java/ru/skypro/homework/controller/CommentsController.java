@@ -41,8 +41,8 @@ public class CommentsController {
                     @ApiResponse(responseCode = "404", description = "Not found", content = @Content(mediaType = ""))
             }
     )
-    public ResponseEntity<Comments> getComments(@PathVariable(required = true) Integer id) {
-        return ResponseEntity.ok(commentsService.getComments(id));
+    public Comments getComments(@PathVariable(required = true) Integer id) {
+        return commentsService.getComments(id);
     }
 
     @PostMapping("{id}/comments")
@@ -59,10 +59,10 @@ public class CommentsController {
                     @ApiResponse(responseCode = "404", description = "Not found", content = @Content(mediaType = ""))
             }
     )
-    public ResponseEntity<Comment> addComment(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                              @PathVariable(required = true) Integer id,
-                                              @RequestBody CreateOrUpdateComment newComment) {
-        return ResponseEntity.ok(commentsService.addComment(userDetails, id, newComment));
+    public Comment addComment(@AuthenticationPrincipal CustomUserDetails userDetails,
+                              @PathVariable(required = true) Integer id,
+                              @RequestBody CreateOrUpdateComment newComment) {
+        return commentsService.addComment(userDetails, id, newComment);
     }
 
     @DeleteMapping("{adId}/comments/{commentId}")
@@ -77,10 +77,9 @@ public class CommentsController {
                     @ApiResponse(responseCode = "404", description = "Not found", content = @Content(mediaType = ""))
             }
     )
-    public void deleteComment(@AuthenticationPrincipal CustomUserDetails userDetails,
-                              @PathVariable(required = true) Integer adId,
+    public void deleteComment(@PathVariable(required = true) Integer adId,
                               @PathVariable(required = true) Integer commentId) {
-        commentsService.deleteComment(userDetails, adId, commentId);
+        commentsService.deleteComment(adId, commentId);
     }
 
     @PatchMapping("{adId}/comments/{commentId}")
@@ -98,11 +97,10 @@ public class CommentsController {
                     @ApiResponse(responseCode = "404", description = "Not found", content = @Content(mediaType = ""))
             }
     )
-    public ResponseEntity<Comment> updateComment(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                                 @PathVariable(required = true) Integer adId,
-                                                 @PathVariable(required = true) Integer commentId,
-                                                 @RequestBody CreateOrUpdateComment updatedComment) {
-        return ResponseEntity.ok(commentsService.updateComment(userDetails, adId, commentId, updatedComment));
+    public Comment updateComment(@PathVariable(required = true) Integer adId,
+                                 @PathVariable(required = true) Integer commentId,
+                                 @RequestBody CreateOrUpdateComment updatedComment) {
+        return commentsService.updateComment(adId, commentId, updatedComment);
     }
 
 }

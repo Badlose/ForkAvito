@@ -9,6 +9,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.transaction.annotation.Transactional;
 import ru.skypro.NewTypeTesting.TestHelper;
 import ru.skypro.homework.dto.accept.CreateOrUpdateComment;
 import ru.skypro.homework.dto.give.Comment;
@@ -71,6 +74,8 @@ public class CommentServiceUnitTest {
     void shouldDeleteComment() {
         UserEntity userEntity = createUserEntity();
         CustomUserDetails userDetails = new CustomUserDetails(userEntity);
+        Authentication authentication = new TestAuthentication(userDetails);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
         AdEntity adEntity = createAdEntityBuilder()
                 .pk(1)
                 .user(userEntity)
@@ -82,17 +87,22 @@ public class CommentServiceUnitTest {
                 .build();
         Integer commentId = commentEntity.getPk();
 
+        when(userRepository.findByUsername(userEntity.getUsername())).thenReturn(Optional.of(userEntity));
+        when(commentRepository.findById(commentId)).thenReturn(Optional.of(commentEntity));
         doNothing().when(commentRepository).deleteById(commentId);
 
-        service.deleteComment(userDetails, adId, commentId);
+        service.deleteComment(adId, commentId);
 
         verify(commentRepository, times(1)).deleteById(commentId);
     }
 
     @Test
+    @Transactional
     void shouldUpdateComment() {
         UserEntity userEntity = createUserEntity();
         CustomUserDetails userDetails = new CustomUserDetails(userEntity);
+        Authentication authentication = new TestAuthentication(userDetails);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
         AdEntity adEntity = createAdEntityBuilder()
                 .pk(1)
                 .user(userEntity)
@@ -111,11 +121,12 @@ public class CommentServiceUnitTest {
                 .build();
 
 
+        when(userRepository.findByUsername(userEntity.getUsername())).thenReturn(Optional.of(userEntity));
         when(commentRepository.findById(commentId)).thenReturn(Optional.of(commentEntity));
         when(commentRepository.save(ArgumentMatchers.any(CommentEntity.class))).thenReturn(any(CommentEntity.class));
 
 
-        Comment updatedComment = service.updateComment(userDetails, adId, commentId, updateComment);
+        Comment updatedComment = service.updateComment(adId, commentId, updateComment);
 
         verify(commentRepository).save(ArgumentMatchers.any(CommentEntity.class));
         assertThat(updatedComment.getText()).isEqualTo(entityBefore.getText());

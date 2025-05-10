@@ -81,13 +81,13 @@ public class AdsController {
                     @ApiResponse(responseCode = "404", description = "Not found", content = @Content(mediaType = ""))
             }
     )
-    public ExtendedAd getAds(@AuthenticationPrincipal CustomUserDetails userDetails,
-                             @PathVariable(required = true) Integer id) {
+    public ExtendedAd getAds(@PathVariable(required = true) Integer id) {
         return adsService.getAdById(id);
     }
 
     @DeleteMapping("{id}")
     @PreAuthorize("isAuthenticated()")
+//    @PreAuthorize("hasRole('ADMIN') or @advertisementService.isAuthor(principal.username, #id)") todo вот так не норм же?
     @Operation(summary = "Удаление объявления",
             tags = {"Объявления"},
             operationId = "removeAd",
@@ -98,8 +98,7 @@ public class AdsController {
                     @ApiResponse(responseCode = "404", description = "Not found", content = @Content(mediaType = ""))
             }
     )
-    public void removeAd(@AuthenticationPrincipal CustomUserDetails userDetails,
-                         @PathVariable(required = true) Integer id) {
+    public void removeAd(@PathVariable(required = true) Integer id) {
         adsService.removeAd(id);
     }
 
@@ -118,8 +117,7 @@ public class AdsController {
                     @ApiResponse(responseCode = "404", description = "Not found", content = @Content(mediaType = ""))
             }
     )
-    public Ad updateAds(@AuthenticationPrincipal CustomUserDetails userDetails,
-                        @PathVariable(required = true) Integer id,
+    public Ad updateAds(@PathVariable(required = true) Integer id,
                         @RequestBody CreateOrUpdateAd updateAd) {
         return adsService.updateAd(id, updateAd);
     }
@@ -156,13 +154,12 @@ public class AdsController {
                     @ApiResponse(responseCode = "404", description = "Not found", content = @Content(mediaType = ""))
             }
     )
-    public ResponseEntity<byte[]> updateImage(@AuthenticationPrincipal CustomUserDetails userDetails,
-                       @PathVariable(required = true) Integer id,
-                       @RequestBody MultipartFile image) throws IOException {
-        byte[] byteImage = adsService.updateImage(id, image);
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType("application/octet-stream"))
-                .body(byteImage);
+    public byte[] updateImage(@PathVariable(required = true) Integer id,
+                       @RequestBody MultipartFile image) throws IOException { //todo или Param?
+        return adsService.updateImage(id, image);
+//        return ResponseEntity.ok()
+//                .contentType(MediaType.parseMediaType("application/octet-stream"))
+//                .body(byteImage);
     }
 
     @GetMapping(value = "/images/{id}", produces = {
@@ -173,23 +170,9 @@ public class AdsController {
     })
     @PreAuthorize("isAuthenticated()")
     public byte[] getImage(@PathVariable String id) {
-//        log.info("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" + id);
         return adsService.getAdImage(id);
-//        String mediaType = imageService.getMediaType(id);
-//        return ResponseEntity.ok()
-//                .contentType(MediaType.parseMediaType("application/octet-stream"))
-//                .body(bytesImage);
+
     }
 
-//    @GetMapping(value = "/{id}/{imageId}", produces = {
-//            MediaType.IMAGE_PNG_VALUE,
-//            MediaType.IMAGE_JPEG_VALUE,
-//            MediaType.IMAGE_GIF_VALUE,
-//            "image/*"
-//    })
-//    @PreAuthorize("isAuthenticated()")
-//    public byte[] getAdImage(@PathVariable String id, @PathVariable String imageUrl) {
-//        return adsService.getCurrentAdImage(id);
-//    }
 }
 
