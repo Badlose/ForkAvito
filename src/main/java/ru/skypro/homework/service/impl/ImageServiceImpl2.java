@@ -54,7 +54,7 @@ public class ImageServiceImpl2 implements ImageService {
             }
             return imageUri;
         } catch (IOException e) {
-            throw new ImageUploadException("Ошибка при сохранении изображения: " + filePath, e);
+            throw new ImageUploadException("error saving the picture: " + filePath, e);
         }
     }
 
