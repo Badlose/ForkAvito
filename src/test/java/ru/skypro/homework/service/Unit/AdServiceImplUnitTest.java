@@ -8,6 +8,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.NewTypeTesting.TestHelper;
@@ -21,6 +23,7 @@ import ru.skypro.homework.mapper.AdMapper;
 import ru.skypro.homework.repository.AdRepository;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.security.CustomUserDetails;
+import ru.skypro.homework.service.ImageService;
 import ru.skypro.homework.service.impl.AdsServiceImpl;
 
 import java.io.IOException;
@@ -37,6 +40,8 @@ public class AdServiceImplUnitTest {
     private AdRepository adRepository;
     @Mock
     private UserRepository userRepository;
+    @Mock
+    private ImageService imageService;
     @InjectMocks
     private AdsServiceImpl service;
 
@@ -60,17 +65,17 @@ public class AdServiceImplUnitTest {
     }
 
     @Test
-    @Disabled
     void shouldCreateNewAd() throws IOException {
-        MultipartFile image = mock(MultipartFile.class);
+        MultipartFile image = getMultipartFileSemiStub();
         UserEntity userEntity = getUserEntity();
         CustomUserDetails userDetails = new CustomUserDetails(userEntity);
         CreateOrUpdateAd createAd = getCreateOrUpdateAd();
         AdEntity adEntity = AdMapper.toCreatedAdEntity(userEntity,createAd);
         adEntity.setUser(userEntity);
-        adEntity.setImage(image.getName());
+        adEntity.setImage("//ads/images/stub");
 
-        when(adRepository.save(adEntity)).thenReturn(adEntity);
+        when(adRepository.save(any(AdEntity.class))).thenReturn(adEntity);
+        when(imageService.uploadAdImage(image, adEntity.getPk())).thenReturn("/ads/images/stub");
         when(userRepository.findByUsername(userEntity.getUsername())).thenReturn(Optional.of(userEntity));
 
         Ad addedAd = service.createNewAd(userDetails, createAd, image);
@@ -108,7 +113,11 @@ public class AdServiceImplUnitTest {
                 .user(userEntity)
                 .build();
         Integer adId = adEntity.getPk();
+        Authentication authentication = new TestAuthentication(userDetails);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
+        when(userRepository.findByUsername(userEntity.getUsername())).thenReturn(Optional.of(userEntity));
+        when(adRepository.findById(adId)).thenReturn(Optional.of(adEntity));
         doNothing().when(adRepository).deleteById(adId);
 
         service.removeAd(adId);
@@ -120,6 +129,8 @@ public class AdServiceImplUnitTest {
     void shouldUpdateAd() {
         UserEntity userEntity = createUserEntity();
         CustomUserDetails userDetails = new CustomUserDetails(userEntity);
+        Authentication authentication = new TestAuthentication(userDetails);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
         AdEntity adEntity = createAdEntityBuilder()
                 .pk(1)
                 .user(userEntity)
@@ -129,6 +140,7 @@ public class AdServiceImplUnitTest {
         AdEntity adEntityBefore = AdMapper.toAdEntity(adEntity, updateAd);
         Ad adBefore = AdMapper.toAd(adEntityBefore);
 
+        when(userRepository.findByUsername(userEntity.getUsername())).thenReturn(Optional.of(userEntity));
         when(adRepository.findById(adId)).thenReturn(Optional.of(adEntity));
         when(adRepository.save(adEntityBefore)).thenReturn(adEntityBefore);
 

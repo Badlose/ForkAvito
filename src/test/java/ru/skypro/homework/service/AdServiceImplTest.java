@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -80,7 +82,7 @@ public class AdServiceImplTest {
         UserEntity userEntity = userRepository.findByUsername("username").orElseThrow();
         CustomUserDetails userDetails = new CustomUserDetails(userEntity);
         CreateOrUpdateAd createdAd = getCreateOrUpdateAd();
-        MultipartFile image = getMultipartFileStub();
+        MultipartFile image = getMultipartFileSemiStub();
 
         Ad adFromDb = service.createNewAd(userDetails, createdAd, image);
 
@@ -148,6 +150,8 @@ public class AdServiceImplTest {
     void shouldRemoveAd() {
         UserEntity userEntity = userRepository.findByUsername("username").orElseThrow();
         CustomUserDetails userDetails = new CustomUserDetails(userEntity);
+        Authentication authentication = new TestAuthentication(userDetails);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
         AdEntity adEntity = repository.findByUserId(userEntity.getId());
         Integer adId = adEntity.getPk();
 

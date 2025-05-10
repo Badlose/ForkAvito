@@ -2,14 +2,18 @@ package ru.skypro.homework.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.skypro.homework.dto.Role;
 import ru.skypro.homework.dto.accept.CreateOrUpdateComment;
 import ru.skypro.homework.dto.give.Comment;
 import ru.skypro.homework.dto.give.Comments;
 import ru.skypro.homework.entity.AdEntity;
 import ru.skypro.homework.entity.CommentEntity;
 import ru.skypro.homework.entity.UserEntity;
+import ru.skypro.homework.exception.AccessNotAllowedException;
 import ru.skypro.homework.exception.AdNotFoundException;
 import ru.skypro.homework.exception.CommentNotFoundException;
 import ru.skypro.homework.exception.UserNotFoundException;
@@ -51,27 +55,28 @@ public class CommentsServiceImpl implements CommentsService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasRole('ADMIN') or (hasRole('ROLE_USER') and checkAdAuthorId(#adId))")
-    public void deleteComment(CustomUserDetails userDetails, Integer adId, Integer commentId) {
-        commentRepository.deleteById(commentId);
+//    @PreAuthorize("hasRole('ADMIN') or (hasRole('ROLE_USER') and checkAdAuthorId(#adId))")
+    public void deleteComment(Integer adId, Integer commentId) {
+        CommentEntity commentEntity = getCommentEntityFromDb(commentId);
+        if (checkAuthority(commentEntity)) {
+            commentRepository.deleteById(commentId);
+        } else {
+            throw new AccessNotAllowedException("Вы не имеете права удалить этот комментарий.");
+        }
     }
 
     @Override
     @Transactional
-    @PreAuthorize("hasRole('ADMIN') or (hasRole('ROLE_USER') and checkAdAuthorId(#adId))")
-    public Comment updateComment(CustomUserDetails userDetails, Integer adId, Integer commentId,
-                                 CreateOrUpdateComment comment) {
-
-        CommentEntity commentEntity = commentRepository.findById(commentId)
-                .orElseThrow(() -> new CommentNotFoundException(
-                        String.format("Comment with id %d not found", commentId)
-                ));
-
-        commentEntity.setText(comment.getText());
-
-        commentRepository.save(commentEntity);
-
-        return toComment(commentEntity);
+//    @PreAuthorize("hasRole('ADMIN') or (hasRole('ROLE_USER') and checkAdAuthorId(#adId))")
+    public Comment updateComment(Integer adId, Integer commentId, CreateOrUpdateComment comment) {
+        CommentEntity commentEntity = getCommentEntityFromDb(commentId);
+        if (checkAuthority(commentEntity)) {
+            commentEntity.setText(comment.getText());
+            commentRepository.save(commentEntity);
+            return toComment(commentEntity);
+        } else {
+            throw new AccessNotAllowedException("Вы не имеете права редактировать этот комментарий.");
+        }
     }
 
     @Transactional
@@ -88,11 +93,30 @@ public class CommentsServiceImpl implements CommentsService {
         ));
     }
 
-    private boolean checkAdAuthorId(CustomUserDetails userDetails, Integer adId) {
-        UserEntity userEntity = getUserEntity(userDetails);
-        return userEntity.getComments().stream()
-                .anyMatch(commentEntity -> commentEntity.getUser().getAds().stream()
-                        .anyMatch(adEntity -> adEntity.getPk().equals(adId)));
+//    private boolean checkAdAuthorId(CustomUserDetails userDetails, Integer adId) {
+//        UserEntity userEntity = getUserEntity(userDetails);
+//        return userEntity.getComments().stream()
+//                .anyMatch(commentEntity -> commentEntity.getUser().getAds().stream()
+//                        .anyMatch(adEntity -> adEntity.getPk().equals(adId)));
+//    }
+
+    private boolean checkAuthority(CommentEntity commentEntity) {
+        UserEntity userEntity = getUserEntityFromAuthentication();
+        return userEntity.getRole().equals(Role.ADMIN) ||
+                userEntity.getId().equals(commentEntity.getUser().getId());
+    }
+
+    private UserEntity getUserEntityFromAuthentication() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException(String.format("User %s not found", username)));
+    }
+
+    private CommentEntity getCommentEntityFromDb(Integer commentId) {
+        return commentRepository.findById(commentId)
+                .orElseThrow(() -> new CommentNotFoundException(
+                        String.format("Comment with id %d not found", commentId)));
     }
 
 }

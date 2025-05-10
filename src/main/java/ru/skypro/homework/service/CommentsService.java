@@ -11,8 +11,8 @@ public interface CommentsService {
 
     Comment addComment(CustomUserDetails userDetails, Integer id, CreateOrUpdateComment comment);
 
-    void deleteComment(CustomUserDetails userDetails, Integer adId, Integer commentId);
+    void deleteComment(Integer adId, Integer commentId);
 
-    Comment updateComment(CustomUserDetails userDetails, Integer adId, Integer commentId, CreateOrUpdateComment comment);
+    Comment updateComment(Integer adId, Integer commentId, CreateOrUpdateComment comment);
 
 }

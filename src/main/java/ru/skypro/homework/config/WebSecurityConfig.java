@@ -56,19 +56,19 @@ public class WebSecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-
-    @Bean
-    public DaoAuthenticationProvider provider() {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(userDetailsService);
-        provider.setPasswordEncoder(passwordEncoder());
-        return provider;
-    }
-
-    @Bean
-    public AuthenticationManager authenticationManager(DaoAuthenticationProvider provider) throws Exception {
-        return new ProviderManager(provider);
-    }
+//
+//    @Bean
+//    public DaoAuthenticationProvider provider() {
+//        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+//        provider.setUserDetailsService(userDetailsService);
+//        provider.setPasswordEncoder(passwordEncoder());
+//        return provider;
+//    }
+//
+//    @Bean
+//    public AuthenticationManager authenticationManager(DaoAuthenticationProvider provider) throws Exception {
+//        return new ProviderManager(provider);
+//    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
