@@ -5,6 +5,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import ru.skypro.homework.dto.accept.CreateOrUpdateComment;
@@ -51,6 +53,8 @@ public class CommentServiceTest {
                 .user(preparedUserEntity)
                 .build();
         adRepository.save(adEntity);
+
+        preparedUserEntity.setAds(List.of(adEntity));
 
         CommentEntity commentEntity = createCommentEntityBuilder()
                 .pk(null)
@@ -110,11 +114,19 @@ public class CommentServiceTest {
 //        String username = "username";
 //        UserEntity userEntity = userRepository.findByUsername(username).orElseThrow();
 //        AdEntity adEntity = adRepository.findByUserId(userEntity.getId());
+//
+//
+//        System.out.println(adEntity);
+//        System.out.println(userEntity);
+//
 //        CustomUserDetails userDetails = new CustomUserDetails(userEntity);
+//        Authentication authentication = new TestAuthentication(userDetails);
+//        SecurityContextHolder.getContext().setAuthentication(authentication);
+//
 //        Integer adId = adEntity.getPk();
 //        Integer commentId = adEntity.getComments().get(0).getPk();
 //
-//        service.deleteComment(userDetails, adId, commentId);
+//        service.deleteComment(adId, commentId);
 //
 //        assertThat(commentRepository.existsById(commentId)).isFalse();
 //    }
@@ -125,11 +137,13 @@ public class CommentServiceTest {
         UserEntity userEntity = userRepository.findByUsername(username).orElseThrow();
         AdEntity adEntity = adRepository.findByUserId(userEntity.getId());
         CustomUserDetails userDetails = new CustomUserDetails(userEntity);
+        Authentication authentication = new TestAuthentication(userDetails);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
         Integer adId = adEntity.getPk();
         Integer commentId = adEntity.getComments().get(0).getPk();
         CreateOrUpdateComment comment = getCreateOrUpdateComment();
 
-        service.updateComment(userDetails, adId, commentId, comment);
+        service.updateComment(adId, commentId, comment);
 
         CommentEntity commentFromDb = commentRepository.findById(commentId).orElseThrow();
 

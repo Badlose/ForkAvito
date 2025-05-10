@@ -54,7 +54,7 @@ public class UserControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print());
 
-        //todo полбза от сообщениян в body - его можно протестировать
+        //todo польза от сообщениян в body - его можно протестировать
     }
 
     @Test

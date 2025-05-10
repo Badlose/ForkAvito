@@ -66,8 +66,8 @@ public class UserController {
                     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(mediaType = ""))
             }
     )
-    public ResponseEntity<User> getUser(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        return ResponseEntity.ok(userService.getUserSelfInfo(userDetails));
+    public User getUser(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        return userService.getUserSelfInfo(userDetails);
     }
 
     @PatchMapping("/me")
@@ -87,9 +87,9 @@ public class UserController {
                     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(mediaType = ""))
             }
     )
-    public ResponseEntity<UpdateUser> updateUser(@AuthenticationPrincipal CustomUserDetails userDetails,
+    public UpdateUser updateUser(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                  @RequestBody UpdateUser updateUser) {
-        return ResponseEntity.ok(userService.updateUser(userDetails, updateUser));
+        return userService.updateUser(userDetails, updateUser);
     }
 
     @PatchMapping(value = "/me/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -107,12 +107,6 @@ public class UserController {
         userService.updateUserImage(userDetails, image);
     }
 
-//    @PostMapping("/upload")
-//    public String uploadImage(@AuthenticationPrincipal CustomUserDetails userDetails,
-//                              @RequestParam MultipartFile image) {
-//        return userService.uploadImage(userDetails, image);
-//    }
-
     @GetMapping(value = "/images/{id}", produces = {
             MediaType.IMAGE_PNG_VALUE,
             MediaType.IMAGE_JPEG_VALUE,
@@ -121,11 +115,6 @@ public class UserController {
     })
     @PreAuthorize("isAuthenticated()")
     public byte[] getImage(@PathVariable String id) {
-//        log.info("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" + id);
         return userService.getUserImage(id);
-//        String mediaType = imageService.getMediaType(id);
-//        return ResponseEntity.ok()
-//                .contentType(MediaType.parseMediaType("application/octet-stream"))
-//                .body(bytesImage);
     }
 }

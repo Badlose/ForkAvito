@@ -13,7 +13,7 @@ public interface AdsService {
 
     Ads getAllAds();
 
-    Ad createNewAd(CustomUserDetails userDetails, CreateOrUpdateAd updateAd, MultipartFile image) throws IOException;
+    Ad createNewAd(CustomUserDetails userDetails, CreateOrUpdateAd updateAd, MultipartFile image);
 
     ExtendedAd getAdById(Integer id);
 
@@ -23,7 +23,7 @@ public interface AdsService {
 
     Ads getAdsMe(CustomUserDetails userDetails);
 
-    byte[] updateImage(Integer id, MultipartFile image) throws IOException;
+    byte[] updateImage(Integer id, MultipartFile image);
 
     byte[] getAdImage(String id);
 
