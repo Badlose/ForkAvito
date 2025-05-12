@@ -19,4 +19,6 @@ public class NewPassword {
     @NotBlank(message = "New password is required")
     @Size(min = 8, max = 16, message = "Current password must be between 8 and 16 characters")
     private String newPassword;
+
 }
+
