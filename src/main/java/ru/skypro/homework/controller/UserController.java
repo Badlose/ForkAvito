@@ -31,7 +31,6 @@ import java.io.IOException;
 public class UserController {
 
     private final UserService userService;
-    private final ImageService imageService;
 
     @PostMapping("/set_password")
     @PreAuthorize("isAuthenticated()")
@@ -88,7 +87,7 @@ public class UserController {
             }
     )
     public UpdateUser updateUser(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                                 @RequestBody UpdateUser updateUser) {
+                                 @RequestBody UpdateUser updateUser) {
         return userService.updateUser(userDetails, updateUser);
     }
 
@@ -103,7 +102,7 @@ public class UserController {
             }
     )
     public void updateUserImage(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                @RequestBody MultipartFile image) throws IOException {
+                                @RequestBody MultipartFile image) {
         userService.updateUserImage(userDetails, image);
     }
 
