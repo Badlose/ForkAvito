@@ -2,6 +2,9 @@ package ru.skypro.NewTypeTesting;
 
 import lombok.RequiredArgsConstructor;
 import org.mockito.Mockito;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -22,6 +25,7 @@ import uk.co.jemos.podam.api.PodamFactory;
 import uk.co.jemos.podam.api.PodamFactoryImpl;
 
 import java.time.Instant;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.List;
 
@@ -54,6 +58,26 @@ public class TestHelper {
         return createUserEntityBuilder().build();
     }
 
+    public static String getPlainUsername() {
+        return "username";
+    }
+
+    public static String getOldPlainPassword() {
+        return "zxczxczxc";
+    }
+
+    public static String getNewPlainPassword() {
+        return "asdasdasd";
+    }
+
+    public static String getEncodedOldPassword() {
+        return new BCryptPasswordEncoder().encode(getOldPlainPassword());
+    }
+
+    public static String getEncodedNewPassword() {
+        return new BCryptPasswordEncoder().encode(getNewPlainPassword());
+    }
+
     public static UserEntity createUserEntityHashPassword() {
         String password = new BCryptPasswordEncoder().encode("zxczxczxc");
         UserEntity userEntity =  createUserEntityBuilder()
@@ -75,6 +99,15 @@ public class TestHelper {
                 "image/jpeg",
                 "test image content".getBytes()
         );
+    }
+
+    public static HttpHeaders getExtractedHeaders() {
+        String auth = getPlainUsername() + ":" + getOldPlainPassword();
+        String encodedAuth = Base64.getEncoder().encodeToString(auth.getBytes());
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Basic " + encodedAuth);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        return headers;
     }
 
     public UserEntity saveUserEntity(UserEntity entity) {
@@ -218,6 +251,13 @@ public class TestHelper {
 
     public static NewPassword getNewPassword() {
         return factory.manufacturePojo(NewPassword.class);
+    }
+
+    public static NewPassword getNewPassword(String current, String newPw) {
+        NewPassword newPassword = new NewPassword();
+        newPassword.setCurrentPassword(current);
+        newPassword.setNewPassword(newPw);
+        return newPassword;
     }
 
     public static Register getRegister() {
