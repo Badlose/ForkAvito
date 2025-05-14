@@ -59,7 +59,7 @@ public class UserControllerTest {
     @Autowired
     private static UserRepository staticUserRepository;
 
-    @BeforeAll //todo
+    @BeforeAll
     static void setUp(@Autowired UserRepository repository) {
         staticUserRepository = repository;
         String password = "zxczxczxc";
@@ -88,10 +88,6 @@ public class UserControllerTest {
         perform
                 .andExpect(status().isOk())
                 .andDo(print());
-//                .andExpect(result -> { todo почему так не работает?
-//                    assertThat(new BCryptPasswordEncoder()
-//                            .matches(newPassword.getNewPassword(), userDetails.getPassword())).isTrue();
-//                });
         UserEntity updatedUser = staticUserRepository.findByUsername("username").orElseThrow();
         String encodedPwFromDb = updatedUser.getPassword();
 
