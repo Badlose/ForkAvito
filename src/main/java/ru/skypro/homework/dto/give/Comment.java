@@ -13,15 +13,10 @@ import java.time.Instant;
 @Schema(description = "ДТО для предоставления информации о комментарии")
 public class Comment {
 
-    @NotEmpty(message = "Author is required")
     private Integer author;
     private String authorImage;
-    @NotBlank(message = "Author firstname is required")
     private String authorFirstName;
-    @NotEmpty(message = "Creation time is required")
     private Instant createdAt;
-    @NotEmpty(message = "Primary key is required")
     private Integer pk;
-    @NotBlank(message = "Text is required")
     private String text;
 }

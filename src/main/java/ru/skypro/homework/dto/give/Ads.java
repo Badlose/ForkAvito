@@ -13,8 +13,6 @@ import java.util.List;
 @Schema(description = "ДТО для предоставления информации о всех объявлениях")
 public class Ads {
 
-    @NotEmpty(message = "Count of Ads is required")
     private Integer count;
-    @NotNull
     private List<Ad> results;
 }

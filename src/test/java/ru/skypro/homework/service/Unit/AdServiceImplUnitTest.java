@@ -1,18 +1,13 @@
 package ru.skypro.homework.service.Unit;
 
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import ru.skypro.NewTypeTesting.TestHelper;
 import ru.skypro.homework.dto.accept.CreateOrUpdateAd;
 import ru.skypro.homework.dto.give.Ad;
 import ru.skypro.homework.dto.give.Ads;
@@ -32,7 +27,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
-import static ru.skypro.NewTypeTesting.TestHelper.*;
+import static ru.skypro.homework.helper.TestHelper.*;
 
 @ExtendWith(MockitoExtension.class)
 public class AdServiceImplUnitTest {
@@ -72,7 +67,7 @@ public class AdServiceImplUnitTest {
         CreateOrUpdateAd createAd = getCreateOrUpdateAd();
         AdEntity adEntity = AdMapper.toCreatedAdEntity(userEntity,createAd);
         adEntity.setUser(userEntity);
-        adEntity.setImage("//ads/images/stub");
+        adEntity.setImage("/ads/images/stub");
 
         when(adRepository.save(any(AdEntity.class))).thenReturn(adEntity);
         when(imageService.uploadAdImage(image, adEntity.getPk())).thenReturn("/ads/images/stub");
@@ -95,13 +90,12 @@ public class AdServiceImplUnitTest {
                 .build();
         Integer adId = adEntity.getPk();
 
-        when(adRepository.findByPk(adId)).thenReturn(Optional.of(adEntity));
+        when(adRepository.findById(adId)).thenReturn(Optional.of(adEntity));
 
         ExtendedAd extendedAd = service.getAdById(adId);
 
-        verify(adRepository, times(1)).findByPk(adId);
+        verify(adRepository, times(1)).findById(adId);
         assertThat(extendedAd.getEmail()).isEqualTo(adEntity.getUser().getUsername());
-
     }
 
     @Test
@@ -140,7 +134,6 @@ public class AdServiceImplUnitTest {
         AdEntity adEntityBefore = AdMapper.toAdEntity(adEntity, updateAd);
         Ad adBefore = AdMapper.toAd(adEntityBefore);
 
-        when(userRepository.findByUsername(userEntity.getUsername())).thenReturn(Optional.of(userEntity));
         when(adRepository.findById(adId)).thenReturn(Optional.of(adEntity));
         when(adRepository.save(adEntityBefore)).thenReturn(adEntityBefore);
 
@@ -151,16 +144,4 @@ public class AdServiceImplUnitTest {
         assertThat(ad.getPrice()).isEqualTo(adBefore.getPrice());
     }
 
-//    @Test todo метод без вызова репозитория
-//    void shouldGetAdsMe() {
-//        UserEntity userEntity = createUserEntity();
-//        CustomUserDetails userDetails = new CustomUserDetails(userEntity);
-//        AdEntity adEntity = createAdEntityBuilder()
-//                .pk(1)
-//                .user(userEntity)
-//                .build();
-//        Integer adId = adEntity.getPk();
-//
-//        when()
-//    }
 }

@@ -1,9 +1,7 @@
-package ru.skypro.NewTypeTesting;
+package ru.skypro.homework.helper;
 
 import lombok.RequiredArgsConstructor;
-import org.mockito.Mockito;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.core.Authentication;
@@ -38,6 +36,7 @@ public class TestHelper {
     private final UserRepository userRepository;
     private final AdRepository adRepository;
     private final CommentRepository commentRepository;
+    private static final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
 
     public static UserEntity.UserEntityBuilder createUserEntityBuilder() {
@@ -71,15 +70,15 @@ public class TestHelper {
     }
 
     public static String getEncodedOldPassword() {
-        return new BCryptPasswordEncoder().encode(getOldPlainPassword());
+        return encoder.encode(getOldPlainPassword());
     }
 
     public static String getEncodedNewPassword() {
-        return new BCryptPasswordEncoder().encode(getNewPlainPassword());
+        return encoder.encode(getNewPlainPassword());
     }
 
     public static UserEntity createUserEntityHashPassword() {
-        String password = new BCryptPasswordEncoder().encode("zxczxczxc");
+        String password = encoder.encode("zxczxczxc");
         UserEntity userEntity =  createUserEntityBuilder()
                 .username("user")
                 .password(password)

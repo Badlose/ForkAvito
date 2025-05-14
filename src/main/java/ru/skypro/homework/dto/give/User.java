@@ -13,17 +13,11 @@ import javax.validation.constraints.NotEmpty;
 @Schema(description = "ДТО для получения информации об авторизованном пользователе")
 public class User {
 
-    @NotEmpty(message = "User id is required")
     private Integer id;
-    @NotBlank(message = "Email is required")
     private String email;
-    @NotBlank(message = "User firstname is required")
     private String firstName;
-    @NotBlank(message = "User lastname is required")
     private String lastName;
-    @NotBlank(message = "Phone number is required")
     private String phone;
-    @NotEmpty(message = "Role is required")
     private Role role;
     private String image;
 }

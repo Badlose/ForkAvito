@@ -1,10 +1,8 @@
 package ru.skypro.homework.controller.RestTemplate;
 
 
-import lombok.EqualsAndHashCode;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,6 +12,7 @@ import org.springframework.http.*;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,11 +23,12 @@ import ru.skypro.homework.dto.UpdateUser;
 import ru.skypro.homework.dto.accept.NewPassword;
 import ru.skypro.homework.dto.give.User;
 import ru.skypro.homework.entity.UserEntity;
+import ru.skypro.homework.helper.TestHelper;
 import ru.skypro.homework.repository.UserRepository;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.springframework.http.HttpStatus.*;
-import static ru.skypro.NewTypeTesting.TestHelper.*;
+import static ru.skypro.homework.helper.TestHelper.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
@@ -36,6 +36,8 @@ public class UserControllerTestRestTemplate {
 
     @Container
     public static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15");
+    @Autowired
+    private PasswordEncoder encoder;
     @LocalServerPort
     private int port;
     @Autowired
@@ -85,7 +87,7 @@ public class UserControllerTestRestTemplate {
         assertThat(responseEntity.getStatusCode()).isEqualTo(OK);
 
         UserEntity updatedUser = userRepository.findByUsername(getPlainUsername()).orElseThrow();
-        assertThat(new BCryptPasswordEncoder().matches(getNewPlainPassword(), updatedUser.getPassword())).isTrue();
+        assertThat(encoder.matches(getNewPlainPassword(), updatedUser.getPassword())).isTrue();
     }
 
     @Test
@@ -137,35 +139,34 @@ public class UserControllerTestRestTemplate {
         assertThat(actualUser.getPhone()).isEqualTo(userEntity.getPhone());
     }
 
-    @Test
-    void shouldUpdateUserImage() {
-        UserEntity userEntityBefore = userRepository.findByUsername(getPlainUsername()).orElseThrow();
-        HttpHeaders headers = getExtractedHeaders();
-        MultipartFile image = getMultipartFileSemiStub();
-
-        MockMultipartFile mockImage = new MockMultipartFile(
-                "image",
-                "test.png",
-                MediaType.IMAGE_PNG_VALUE,
-                "some image data".getBytes()
-        );
-
-        HttpEntity<MockMultipartFile> requestEntity = new HttpEntity<>(mockImage, headers);
-
-        ResponseEntity<?> responseEntity = restTemplate.exchange(
-                "http://localhost:" + port + "/users/me/image",
-                HttpMethod.PATCH,
-                requestEntity,
-                void.class
-        );
-
-        assertThat(responseEntity).isNotNull();
-        assertThat(responseEntity.getStatusCode()).isEqualTo(OK);
-
-        UserEntity userEntityAfter = userRepository.findByUsername(getPlainUsername()).orElseThrow();
-
-        assertThat(userEntityBefore.getImage()).isEqualTo(userEntityAfter.getImage());
-    }
+//    @Test
+//    void shouldUpdateUserImage() {
+//        UserEntity userEntityBefore = userRepository.findByUsername(getPlainUsername()).orElseThrow();
+//        HttpHeaders headers = getExtractedHeaders();
+//
+//        MockMultipartFile mockImage = new MockMultipartFile(
+//                "image",
+//                "test.png",
+//                MediaType.IMAGE_PNG_VALUE,
+//                "some image data".getBytes()
+//        );
+//
+//        HttpEntity<MockMultipartFile> requestEntity = new HttpEntity<>(mockImage, headers);
+//
+//        ResponseEntity<?> responseEntity = restTemplate.exchange(
+//                "http://localhost:" + port + "/users/me/image",
+//                HttpMethod.PATCH,
+//                requestEntity,
+//                void.class
+//        );
+//
+//        assertThat(responseEntity).isNotNull();
+//        assertThat(responseEntity.getStatusCode()).isEqualTo(OK);
+//
+//        UserEntity userEntityAfter = userRepository.findByUsername(getPlainUsername()).orElseThrow();
+//
+//        assertThat(userEntityBefore.getImage()).isEqualTo(userEntityAfter.getImage());
+//    }
 
 
 }

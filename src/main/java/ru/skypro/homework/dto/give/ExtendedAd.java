@@ -10,22 +10,14 @@ import lombok.NonNull;
 @Schema(description = "ДТО для предоставления расширенной информации об объявлении и авторе")
 public class ExtendedAd {
 
-    @NonNull
     private Integer pk;
-    @NonNull
     private String authorFirstName;
-    @NonNull
     private String authorLastName;
-    @NonNull
     private String description;
-    @NonNull
     private String email;
     private String image;
-    @NonNull
     private String phone;
-    @NonNull
     private Integer price;
-    @NonNull
     private String title;
 
 }

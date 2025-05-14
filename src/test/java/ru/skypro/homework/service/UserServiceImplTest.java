@@ -1,5 +1,6 @@
 package ru.skypro.homework.service;
 
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,12 +15,13 @@ import ru.skypro.homework.security.CustomUserDetails;
 import ru.skypro.homework.service.impl.UserServiceImpl;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static ru.skypro.NewTypeTesting.TestHelper.*;
+import static ru.skypro.homework.helper.TestHelper.*;
 
 @SpringBootTest
-@ActiveProfiles("test")
 public class UserServiceImplTest {
 
+    @Autowired
+    private BCryptPasswordEncoder encoder;
     @Autowired
     private UserRepository repository;
     @Autowired
@@ -38,7 +40,7 @@ public class UserServiceImplTest {
         service.setPassword(customUserDetails, newPassword);
 
         UserEntity userFromDb = repository.findByUsername(userEntity.getUsername()).orElseThrow();
-        assertThat(new BCryptPasswordEncoder().matches(newPassword.getNewPassword(), userFromDb.getPassword()));
+        assertThat(encoder.matches(newPassword.getNewPassword(), userFromDb.getPassword()));
     }
 
     @Test

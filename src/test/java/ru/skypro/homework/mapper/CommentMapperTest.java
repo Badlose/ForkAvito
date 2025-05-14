@@ -12,7 +12,7 @@ import ru.skypro.homework.entity.UserEntity;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static ru.skypro.NewTypeTesting.TestHelper.*;
+import static ru.skypro.homework.helper.TestHelper.*;
 import static ru.skypro.homework.mapper.CommentMapper.createComment;
 import static ru.skypro.homework.mapper.CommentMapper.toComments;
 
