@@ -63,11 +63,11 @@ public class AdsController {
     )
     public Ad addAd(@AuthenticationPrincipal CustomUserDetails userDetails,
                     @RequestPart("properties") CreateOrUpdateAd createAd,
-                    @RequestPart("image") MultipartFile image) throws IOException {
+                    @RequestPart("image") MultipartFile image) {
         return adsService.createNewAd(userDetails, createAd, image);
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Получение информации об объявлении",
             tags = {"Объявления"},
@@ -81,13 +81,12 @@ public class AdsController {
                     @ApiResponse(responseCode = "404", description = "Not found", content = @Content(mediaType = ""))
             }
     )
-    public ExtendedAd getAds(@PathVariable(required = true) Integer id) {
+    public ExtendedAd getAds(@PathVariable Integer id) {
         return adsService.getAdById(id);
     }
 
-    @DeleteMapping("{id}")
-    @PreAuthorize("isAuthenticated()")
-//    @PreAuthorize("hasRole('ADMIN') or @advertisementService.isAuthor(principal.username, #id)") todo вот так не норм же?
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('USER') and @adsServiceImpl.checkAdAuthor(#id))")
     @Operation(summary = "Удаление объявления",
             tags = {"Объявления"},
             operationId = "removeAd",
@@ -98,12 +97,12 @@ public class AdsController {
                     @ApiResponse(responseCode = "404", description = "Not found", content = @Content(mediaType = ""))
             }
     )
-    public void removeAd(@PathVariable(required = true) Integer id) {
+    public void removeAd(@PathVariable Integer id) {
         adsService.removeAd(id);
     }
 
-    @PatchMapping("{id}")
-    @PreAuthorize("isAuthenticated()")
+    @PatchMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('USER') and @adsServiceImpl.checkAdAuthor(#id))")
     @Operation(summary = "Обновление информации об объявлении",
             tags = {"Объявления"},
             operationId = "updateAds",
@@ -117,7 +116,7 @@ public class AdsController {
                     @ApiResponse(responseCode = "404", description = "Not found", content = @Content(mediaType = ""))
             }
     )
-    public Ad updateAds(@PathVariable(required = true) Integer id,
+    public Ad updateAds(@PathVariable Integer id,
                         @RequestBody CreateOrUpdateAd updateAd) {
         return adsService.updateAd(id, updateAd);
     }
@@ -139,8 +138,8 @@ public class AdsController {
         return adsService.getAdsMe(userDetails);
     }
 
-    @PatchMapping(value = "{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("isAuthenticated()")
+    @PatchMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('USER') and @adsServiceImpl.checkAdAuthor(#id))")
     @Operation(summary = "Обновление картинки объявления",
             tags = {"Объявления"},
             operationId = "updateImage",
@@ -154,12 +153,9 @@ public class AdsController {
                     @ApiResponse(responseCode = "404", description = "Not found", content = @Content(mediaType = ""))
             }
     )
-    public byte[] updateImage(@PathVariable(required = true) Integer id,
-                       @RequestBody MultipartFile image) throws IOException { //todo или Param?
+    public byte[] updateImage(@PathVariable Integer id,
+                       @RequestBody MultipartFile image) {
         return adsService.updateImage(id, image);
-//        return ResponseEntity.ok()
-//                .contentType(MediaType.parseMediaType("application/octet-stream"))
-//                .body(byteImage);
     }
 
     @GetMapping(value = "/images/{id}", produces = {

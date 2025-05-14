@@ -12,13 +12,9 @@ import javax.validation.constraints.NotEmpty;
 @Schema(description = "ДТО для предоставления информации об объявлении")
 public class Ad {
 
-    @NotEmpty(message = "Author is required")
     private Integer author;
     private String image;
-    @NotEmpty(message = "Primary key is required")
     private Integer pk;
-    @NotEmpty(message = "Price is required")
     private Integer price;
-    @NotBlank(message = "Title is required")
     private String title;
 }

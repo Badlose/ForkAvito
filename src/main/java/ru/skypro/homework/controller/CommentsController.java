@@ -27,7 +27,7 @@ public class CommentsController {
 
     private final CommentsService commentsService;
 
-    @GetMapping("{id}/comments")
+    @GetMapping("/{id}/comments")
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Получение комментариев объявления",
             tags = {"Комментарии"},
@@ -41,11 +41,11 @@ public class CommentsController {
                     @ApiResponse(responseCode = "404", description = "Not found", content = @Content(mediaType = ""))
             }
     )
-    public Comments getComments(@PathVariable(required = true) Integer id) {
+    public Comments getComments(@PathVariable Integer id) {
         return commentsService.getComments(id);
     }
 
-    @PostMapping("{id}/comments")
+    @PostMapping("/{id}/comments")
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Добавление комментария к объявлению",
             tags = {"Комментарии"},
@@ -60,13 +60,13 @@ public class CommentsController {
             }
     )
     public Comment addComment(@AuthenticationPrincipal CustomUserDetails userDetails,
-                              @PathVariable(required = true) Integer id,
+                              @PathVariable Integer id,
                               @RequestBody CreateOrUpdateComment newComment) {
         return commentsService.addComment(userDetails, id, newComment);
     }
 
-    @DeleteMapping("{adId}/comments/{commentId}")
-    @PreAuthorize("isAuthenticated()")
+    @DeleteMapping("/{adId}/comments/{commentId}")
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('USER') and @commentsServiceImpl.checkCommentAuthor(#commentId))")
     @Operation(summary = "Удаление комментария",
             tags = {"Комментарии"},
             operationId = "deleteComment",
@@ -77,13 +77,13 @@ public class CommentsController {
                     @ApiResponse(responseCode = "404", description = "Not found", content = @Content(mediaType = ""))
             }
     )
-    public void deleteComment(@PathVariable(required = true) Integer adId,
-                              @PathVariable(required = true) Integer commentId) {
+    public void deleteComment(@PathVariable Integer adId,
+                              @PathVariable Integer commentId) {
         commentsService.deleteComment(adId, commentId);
     }
 
-    @PatchMapping("{adId}/comments/{commentId}")
-    @PreAuthorize("isAuthenticated()")
+    @PatchMapping("/{adId}/comments/{commentId}")
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('USER') and @commentsServiceImpl.checkCommentAuthor(#commentId))")
     @Operation(summary = "Обновление комментария",
             tags = {"Комментарии"},
             operationId = "updateComment",
@@ -97,8 +97,8 @@ public class CommentsController {
                     @ApiResponse(responseCode = "404", description = "Not found", content = @Content(mediaType = ""))
             }
     )
-    public Comment updateComment(@PathVariable(required = true) Integer adId,
-                                 @PathVariable(required = true) Integer commentId,
+    public Comment updateComment(@PathVariable Integer adId,
+                                 @PathVariable Integer commentId,
                                  @RequestBody CreateOrUpdateComment updatedComment) {
         return commentsService.updateComment(adId, commentId, updatedComment);
     }

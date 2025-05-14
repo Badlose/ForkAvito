@@ -1,9 +1,12 @@
 package ru.skypro.homework.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,26 +20,26 @@ import ru.skypro.homework.security.CustomUserDetails;
 import ru.skypro.homework.service.ImageService;
 import ru.skypro.homework.service.UserService;
 
-import java.io.IOException;
-
 import static ru.skypro.homework.mapper.UserMapper.toUser;
 import static ru.skypro.homework.mapper.UserMapper.toUserEntity;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
     private final UserRepository userRepository;
     private final ImageService imageService;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
     public void setPassword(CustomUserDetails userDetails, NewPassword newPassword) {
         UserEntity userEntity = getUserEntity(userDetails);
-        String password = new BCryptPasswordEncoder().encode(newPassword.getNewPassword());
+        String password = passwordEncoder.encode(newPassword.getNewPassword());
         userEntity.setPassword(password);
         userRepository.save(userEntity);
+        log.info("New user was created with username {}", userEntity.getUsername());
     }
 
     @Override
@@ -52,6 +55,7 @@ public class UserServiceImpl implements UserService {
         UserEntity entityFromDb = getUserEntity(userDetails);
         entityFromDb = toUserEntity(entityFromDb, updateUser);
         userRepository.save(entityFromDb);
+        log.info("User with id {} was updated", entityFromDb.getId());
         return updateUser;
     }
 
@@ -59,20 +63,13 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void updateUserImage(CustomUserDetails userDetails, MultipartFile image) {
         UserEntity userEntity = getUserEntity(userDetails);
-        String imageUrl = "/" + imageService.uploadUserImage(image, userEntity.getId());
-
-//        String trimmedImageUrl = "/users/images/" + imageUrl;
-//        String trimmedImageUrl = "/users/images" + imageUrl.substring(0, imageUrl.lastIndexOf(".") - 1);
+        Integer userId = userEntity.getId();
+        String imageUrl = imageService.uploadUserImage(image, userId);
+        log.info("Image for user with id {} was updated", userId);
         userEntity.setImage(imageUrl);
-//        log.info("USERENTITY IMAGE             " + userEntity.getImage());
-
         userRepository.save(userEntity);
     }
 
-//    @Override
-//    public String uploadImage(CustomUserDetails userDetails, MultipartFile image) {
-//        service.uploadImage(userDetails, image);
-//    }
 
     @Override
     @Transactional
@@ -80,11 +77,9 @@ public class UserServiceImpl implements UserService {
         return imageService.getUsersImageBytes(id);
     }
 
-    @Transactional
     private UserEntity getUserEntity(CustomUserDetails userDetails) {
         String username = userDetails.getUsername();
-        return userRepository.findByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException(String.format("User %s not found", username)));
+        return userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
     }
 
 }

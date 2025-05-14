@@ -39,7 +39,7 @@ public class AuthServiceImpl implements AuthService {
         if (repository.existsByUsername(register.getUsername())) {
             return false;
         }
-        register.setPassword(new BCryptPasswordEncoder().encode(register.getPassword()));
+        register.setPassword(encoder.encode(register.getPassword()));
         UserEntity entity = AuthMapper.createNewUser(register);
         repository.save(entity);
         return true;

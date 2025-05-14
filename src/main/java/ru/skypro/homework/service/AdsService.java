@@ -27,4 +27,5 @@ public interface AdsService {
 
     byte[] getAdImage(String id);
 
+//    boolean checkAdAuthor(Integer id);
 }

@@ -3,10 +3,12 @@ package ru.skypro.homework.service;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import ru.skypro.homework.dto.accept.CreateOrUpdateComment;
@@ -24,10 +26,10 @@ import ru.skypro.homework.service.impl.CommentsServiceImpl;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static ru.skypro.NewTypeTesting.TestHelper.*;
+import static org.mockito.Mockito.times;
+import static ru.skypro.homework.helper.TestHelper.*;
 
 @SpringBootTest
-@ActiveProfiles("test")
 @Transactional
 public class CommentServiceTest {
     @Autowired
@@ -40,7 +42,6 @@ public class CommentServiceTest {
     private CommentsServiceImpl service;
 
     @BeforeEach
-//    @Transactional
     void setUpData() {
         UserEntity preparedUserEntity = createUserEntityBuilder()
                 .id(null)
@@ -73,7 +74,6 @@ public class CommentServiceTest {
     }
 
     @Test
-//    @Transactional
     void shouldGetComments() {
         UserEntity userEntity = userRepository.findByUsername("username").orElseThrow();
         AdEntity adEntity = adRepository.findByUserId(userEntity.getId());
@@ -108,28 +108,28 @@ public class CommentServiceTest {
         assertThat(createdComment.getText()).isEqualTo(commentEntity.getText());
     }
 
-//    @Test
-//    @Transactional
-//    void shouldDeleteComment() { //todo
-//        String username = "username";
-//        UserEntity userEntity = userRepository.findByUsername(username).orElseThrow();
-//        AdEntity adEntity = adRepository.findByUserId(userEntity.getId());
-//
-//
-//        System.out.println(adEntity);
-//        System.out.println(userEntity);
-//
-//        CustomUserDetails userDetails = new CustomUserDetails(userEntity);
-//        Authentication authentication = new TestAuthentication(userDetails);
-//        SecurityContextHolder.getContext().setAuthentication(authentication);
-//
-//        Integer adId = adEntity.getPk();
-//        Integer commentId = adEntity.getComments().get(0).getPk();
-//
-//        service.deleteComment(adId, commentId);
-//
-//        assertThat(commentRepository.existsById(commentId)).isFalse();
-//    }
+    @Test
+    void shouldDeleteComment() {
+        UserEntity userEntity = userRepository.save(createUserEntity());
+        AdEntity adEntity = adRepository.save(createAdEntity());
+        CommentEntity commentEntity = commentRepository.save(createCommentEntity());
+        commentEntity.setUser(userEntity);
+        commentEntity.setAd(adEntity);
+        adEntity.setComments(List.of(commentEntity));
+        userEntity.setAds(List.of(adEntity));
+        userEntity.setComments(List.of(commentEntity));
+
+        CustomUserDetails userDetails = new CustomUserDetails(userEntity);
+        Authentication authentication = new TestAuthentication(userDetails);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        Integer adId = adEntity.getPk();
+        Integer commentId = commentEntity.getPk();
+
+        service.deleteComment(adId, commentId);
+
+        assertThat(commentRepository.findById(commentId)).isEmpty();
+    }
 
     @Test
     void shouldUpdateComment() {

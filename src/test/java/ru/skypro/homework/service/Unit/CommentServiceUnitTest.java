@@ -1,18 +1,14 @@
 package ru.skypro.homework.service.Unit;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
-import ru.skypro.NewTypeTesting.TestHelper;
 import ru.skypro.homework.dto.accept.CreateOrUpdateComment;
 import ru.skypro.homework.dto.give.Comment;
 import ru.skypro.homework.entity.AdEntity;
@@ -24,12 +20,13 @@ import ru.skypro.homework.repository.CommentRepository;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.security.CustomUserDetails;
 import ru.skypro.homework.service.impl.CommentsServiceImpl;
+import ru.skypro.homework.service.impl.ImageServiceImpl;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
-import static ru.skypro.NewTypeTesting.TestHelper.*;
+import static ru.skypro.homework.helper.TestHelper.*;
 
 @ExtendWith(MockitoExtension.class)
 public class CommentServiceUnitTest {
@@ -42,11 +39,6 @@ public class CommentServiceUnitTest {
     @InjectMocks
     private CommentsServiceImpl service;
 
-    @Test
-        // todo нет вызова репозитори
-    void shouldGetComments() {
-
-    }
 
     @Test
     void shouldAddComment() { //todo время создания комментария
@@ -120,11 +112,8 @@ public class CommentServiceUnitTest {
                 .text(updateComment.getText())
                 .build();
 
-
-        when(userRepository.findByUsername(userEntity.getUsername())).thenReturn(Optional.of(userEntity));
         when(commentRepository.findById(commentId)).thenReturn(Optional.of(commentEntity));
         when(commentRepository.save(ArgumentMatchers.any(CommentEntity.class))).thenReturn(any(CommentEntity.class));
-
 
         Comment updatedComment = service.updateComment(adId, commentId, updateComment);
 

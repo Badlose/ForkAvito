@@ -6,7 +6,7 @@ import ru.skypro.homework.dto.accept.Register;
 import ru.skypro.homework.entity.UserEntity;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static ru.skypro.NewTypeTesting.TestHelper.getRegister;
+import static ru.skypro.homework.helper.TestHelper.getRegister;
 import static ru.skypro.homework.mapper.AuthMapper.createNewUser;
 
 @SpringBootTest
