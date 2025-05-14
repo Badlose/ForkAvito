@@ -3,13 +3,10 @@ package ru.skypro.homework.service;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import ru.skypro.homework.dto.accept.CreateOrUpdateComment;
 import ru.skypro.homework.dto.give.Comment;
@@ -26,7 +23,6 @@ import ru.skypro.homework.service.impl.CommentsServiceImpl;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.times;
 import static ru.skypro.homework.helper.TestHelper.*;
 
 @SpringBootTest

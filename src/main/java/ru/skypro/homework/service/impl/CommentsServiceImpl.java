@@ -13,7 +13,10 @@ import ru.skypro.homework.dto.give.Comments;
 import ru.skypro.homework.entity.AdEntity;
 import ru.skypro.homework.entity.CommentEntity;
 import ru.skypro.homework.entity.UserEntity;
-import ru.skypro.homework.exception.*;
+import ru.skypro.homework.exception.AdNotFoundException;
+import ru.skypro.homework.exception.CommentAccessNotAllowedException;
+import ru.skypro.homework.exception.CommentNotFoundException;
+import ru.skypro.homework.exception.UserNotFoundException;
 import ru.skypro.homework.repository.AdRepository;
 import ru.skypro.homework.repository.CommentRepository;
 import ru.skypro.homework.repository.UserRepository;
@@ -55,11 +58,8 @@ public class CommentsServiceImpl implements CommentsService {
     @Override
     @Transactional
     public void deleteComment(Integer adId, Integer commentId) {
-        log.info("                                      we are here 58");
         CommentEntity commentEntity = getCommentEntityFromDb(commentId);
-        log.info("                                      we are here 60");
         validateCommentAuthor(commentId, commentEntity);
-        log.info("                                      we are here 62");
         commentRepository.deleteById(commentId);
     }
 
@@ -67,7 +67,7 @@ public class CommentsServiceImpl implements CommentsService {
     @Transactional
     public Comment updateComment(Integer adId, Integer commentId, CreateOrUpdateComment comment) {
         CommentEntity commentEntity = getCommentEntityFromDb(commentId);
-//        validateCommentAuthor(commentId, commentEntity);
+        validateCommentAuthor(commentId, commentEntity);
         commentEntity.setText(comment.getText());
         commentRepository.save(commentEntity);
         log.info("Comment was updated for Ad with id: {}", adId);

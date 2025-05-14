@@ -5,10 +5,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
-import org.testcontainers.shaded.com.trilead.ssh2.crypto.PEMDecoder;
 import ru.skypro.homework.dto.UpdateUser;
 import ru.skypro.homework.dto.accept.NewPassword;
 import ru.skypro.homework.entity.UserEntity;
@@ -19,7 +17,7 @@ import ru.skypro.homework.service.impl.UserServiceImpl;
 
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import static ru.skypro.homework.helper.TestHelper.*;
 
@@ -81,5 +79,6 @@ public class UserServiceImplUnitTest {
         verify(repository, times(1)).save(userEntity);
         verify(repository, times(1)).findByUsername(userEntity.getUsername());
     }
+
 }
 

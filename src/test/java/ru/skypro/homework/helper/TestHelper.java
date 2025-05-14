@@ -27,7 +27,7 @@ import java.util.Base64;
 import java.util.Collection;
 import java.util.List;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 
 @RequiredArgsConstructor
 public class TestHelper {
@@ -79,7 +79,7 @@ public class TestHelper {
 
     public static UserEntity createUserEntityHashPassword() {
         String password = encoder.encode("zxczxczxc");
-        UserEntity userEntity =  createUserEntityBuilder()
+        UserEntity userEntity = createUserEntityBuilder()
                 .username("user")
                 .password(password)
                 .build();
@@ -116,12 +116,6 @@ public class TestHelper {
     public void deleteUserEntity(Integer id) {
         userRepository.deleteById(id);
     }
-
-
-
-
-
-
 
 
     public static class TestAuthentication implements Authentication {
@@ -170,17 +164,6 @@ public class TestHelper {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
     public static AdEntity.AdEntityBuilder createAdEntityBuilder() {
         return AdEntity.builder()
                 .pk(factory.manufacturePojo(Integer.class))
@@ -205,9 +188,6 @@ public class TestHelper {
     }
 
 
-
-
-
     public static CommentEntity.CommentEntityBuilder createCommentEntityBuilder() {
         return CommentEntity.builder()
                 .pk(factory.manufacturePojo(Integer.class))
@@ -230,10 +210,6 @@ public class TestHelper {
     public void deleteCommentEntity(Integer id) {
         commentRepository.deleteById(id);
     }
-
-
-
-
 
 
     public static CreateOrUpdateAd getCreateOrUpdateAd() {
@@ -334,14 +310,6 @@ public class TestHelper {
 
     public static CustomUserDetails getCustomUserDetails() {
         return factory.manufacturePojo(CustomUserDetails.class);
-    }
-
-
-    public static void main(String[] args) {
-//        System.out.println(getFullCommentEntity());
-        System.out.println(getFullAdEntity().getUser());
-        System.out.println(getFullAdEntity().getComments());
-//        System.out.println(getFullUserEntity());
     }
 
 }

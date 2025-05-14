@@ -10,4 +10,5 @@ public class CommentAccessNotAllowedException extends AvitoParentException {
     public CommentAccessNotAllowedException(Integer id) {
         super(COMMENT_ACCESS_NOT_ALLOWED, "You are not authorized to edit this comment: [%s]".formatted(id));
     }
+
 }

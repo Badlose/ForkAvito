@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import static ru.skypro.homework.helper.TestHelper.*;
 
@@ -65,7 +65,7 @@ public class AdServiceImplUnitTest {
         UserEntity userEntity = getUserEntity();
         CustomUserDetails userDetails = new CustomUserDetails(userEntity);
         CreateOrUpdateAd createAd = getCreateOrUpdateAd();
-        AdEntity adEntity = AdMapper.toCreatedAdEntity(userEntity,createAd);
+        AdEntity adEntity = AdMapper.toCreatedAdEntity(userEntity, createAd);
         adEntity.setUser(userEntity);
         adEntity.setImage("/ads/images/stub");
 
@@ -133,7 +133,7 @@ public class AdServiceImplUnitTest {
         CreateOrUpdateAd updateAd = getCreateOrUpdateAd();
         AdEntity adEntityBefore = AdMapper.toAdEntity(adEntity, updateAd);
         Ad adBefore = AdMapper.toAd(adEntityBefore);
-
+        when(userRepository.findByUsername(userEntity.getUsername())).thenReturn(Optional.of(userEntity));
         when(adRepository.findById(adId)).thenReturn(Optional.of(adEntity));
         when(adRepository.save(adEntityBefore)).thenReturn(adEntityBefore);
 

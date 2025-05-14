@@ -67,13 +67,16 @@ public class AdsServiceImpl implements AdsService {
     @Transactional
     public void removeAd(Integer id) {
         validateAuthor(id);
+        AdEntity adEntity = getAdEntity(id);
+        String imageUri = adEntity.getImage();
         adRepository.deleteById(id);
+        imageService.deleteImage(imageUri);
     }
 
     @Override
     @Transactional
     public Ad updateAd(Integer id, CreateOrUpdateAd updateAd) {
-//        validateAuthor(id);
+        validateAuthor(id);
         AdEntity adEntity = getAdEntity(id);
         adEntity = toAdEntity(adEntity, updateAd);
         adRepository.save(adEntity);
@@ -94,6 +97,7 @@ public class AdsServiceImpl implements AdsService {
     public byte[] updateImage(Integer id, MultipartFile image) {
         validateAuthor(id);
         AdEntity adEntity = getAdEntity(id);
+        imageService.deleteImage(adEntity.getImage());
         String imageUri = imageService.uploadAdImage(image, id);
         log.info("Image for ad with id {} was updated", id);
         adEntity.setImage(imageUri);

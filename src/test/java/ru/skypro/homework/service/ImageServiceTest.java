@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.entity.AdEntity;
@@ -22,7 +21,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static ru.skypro.homework.helper.TestHelper.*;
 
 @SpringBootTest
@@ -46,7 +45,6 @@ public class ImageServiceTest {
     private final String realAdImagePath = "D:\\SkyPro\\Diplom\\ads\\images\\Ad_Id_1.jpeg";
 
     @BeforeEach
-//    @Transactional
     void setUpData() {
         UserEntity preparedUserEntity = createUserEntityBuilder()
                 .id(null)
@@ -105,41 +103,16 @@ public class ImageServiceTest {
         adEntity.setImage(s);
         String newImageUrl = adEntity.getImage();
 
-        assertThat(newImageUrl.substring(0, newImageUrl.lastIndexOf("_" ) - 1)).isEqualTo("/ads/images/Ad_Id_");
+        assertThat(newImageUrl.substring(0, newImageUrl.lastIndexOf("_") - 1)).isEqualTo("/ads/images/Ad_Id_");
         assertThat(newImageUrl).isNotEqualTo(oldImageUrl);
     }
 
-//    @Test
-//    void shouldGetUserImageBytes() throws IOException {
-//        UserEntity userEntity = userRepository.findByUsername("username").orElseThrow();
-//        userEntity.setImage("\\User_Id_1.jpeg");
-//
-//        byte[] userImageBytes = service.getUsersImageBytes(userEntity.getImage());
-//        Path path = Path.of(realUserImagePath);
-//        byte[] realImageBytes = Files.readAllBytes(path);
-//
-//        assertThat(userImageBytes).isEqualTo(realImageBytes);
-//    }
-//
-//    @Test
-//    void shouldGetAdsImageBytes() throws IOException {
-//        UserEntity userEntity = userRepository.findByUsername("username").orElseThrow();
-//        AdEntity adEntity = adRepository.findByUserId(userEntity.getId());
-//        adEntity.setImage("\\Ad_Id_1.jpeg");
-//
-//
-//        byte[] adImageBytes = service.getAdsImageBytes(adEntity.getImage());
-//        Path path = Path.of(realAdImagePath);
-//        byte[] realImageBytes = Files.readAllBytes(path);
-//
-//        assertThat(adImageBytes).isEqualTo(realImageBytes);
-//    }
 
     @Test
     void shouldGetUpdatedImageBytes() throws IOException {
         UserEntity userEntity = userRepository.findByUsername("username").orElseThrow();
         AdEntity adEntity = adRepository.findByUserId(userEntity.getId());
-        adEntity.setImage("ads\\images\\Ad_Id_1.jpeg");
+        adEntity.setImage("\\ads\\images\\Ad_Id_1.jpeg");
 
 
         byte[] adImageBytes = service.getUpdatedImageBytes(adEntity.getImage());
@@ -148,6 +121,5 @@ public class ImageServiceTest {
 
         assertThat(adImageBytes).isEqualTo(realImageBytes);
     }
-
 
 }

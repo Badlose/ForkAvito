@@ -8,14 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.http.*;
-import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.web.multipart.MultipartFile;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -23,11 +23,10 @@ import ru.skypro.homework.dto.UpdateUser;
 import ru.skypro.homework.dto.accept.NewPassword;
 import ru.skypro.homework.dto.give.User;
 import ru.skypro.homework.entity.UserEntity;
-import ru.skypro.homework.helper.TestHelper;
 import ru.skypro.homework.repository.UserRepository;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.springframework.http.HttpStatus.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.http.HttpStatus.OK;
 import static ru.skypro.homework.helper.TestHelper.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -138,35 +137,5 @@ public class UserControllerTestRestTemplate {
         assertThat(actualUser.getLastName()).isEqualTo(userEntity.getLastName());
         assertThat(actualUser.getPhone()).isEqualTo(userEntity.getPhone());
     }
-
-//    @Test
-//    void shouldUpdateUserImage() {
-//        UserEntity userEntityBefore = userRepository.findByUsername(getPlainUsername()).orElseThrow();
-//        HttpHeaders headers = getExtractedHeaders();
-//
-//        MockMultipartFile mockImage = new MockMultipartFile(
-//                "image",
-//                "test.png",
-//                MediaType.IMAGE_PNG_VALUE,
-//                "some image data".getBytes()
-//        );
-//
-//        HttpEntity<MockMultipartFile> requestEntity = new HttpEntity<>(mockImage, headers);
-//
-//        ResponseEntity<?> responseEntity = restTemplate.exchange(
-//                "http://localhost:" + port + "/users/me/image",
-//                HttpMethod.PATCH,
-//                requestEntity,
-//                void.class
-//        );
-//
-//        assertThat(responseEntity).isNotNull();
-//        assertThat(responseEntity.getStatusCode()).isEqualTo(OK);
-//
-//        UserEntity userEntityAfter = userRepository.findByUsername(getPlainUsername()).orElseThrow();
-//
-//        assertThat(userEntityBefore.getImage()).isEqualTo(userEntityAfter.getImage());
-//    }
-
 
 }
