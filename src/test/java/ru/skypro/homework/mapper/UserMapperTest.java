@@ -7,8 +7,8 @@ import ru.skypro.homework.dto.give.User;
 import ru.skypro.homework.entity.UserEntity;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static ru.skypro.NewTypeTesting.TestHelper.getUpdateUser;
-import static ru.skypro.NewTypeTesting.TestHelper.getUserEntity;
+import static ru.skypro.homework.helper.TestHelper.getUpdateUser;
+import static ru.skypro.homework.helper.TestHelper.getUserEntity;
 
 @SpringBootTest
 public class UserMapperTest {

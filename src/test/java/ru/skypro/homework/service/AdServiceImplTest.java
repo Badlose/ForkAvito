@@ -25,10 +25,9 @@ import ru.skypro.homework.service.impl.AdsServiceImpl;
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static ru.skypro.NewTypeTesting.TestHelper.*;
+import static ru.skypro.homework.helper.TestHelper.*;
 
 @SpringBootTest
-@ActiveProfiles("test")
 public class AdServiceImplTest {
     @Autowired
     private AdRepository repository;
@@ -110,10 +109,8 @@ public class AdServiceImplTest {
     }
 
     @Test
-    @Disabled
     void shouldUpdateAd() {
         UserEntity userEntity = userRepository.findByUsername("username").orElseThrow();
-        CustomUserDetails userDetails = new CustomUserDetails(userEntity);
         AdEntity adEntity = repository.findByUserId(userEntity.getId());
         CreateOrUpdateAd updateAd = getCreateOrUpdateAd();
 

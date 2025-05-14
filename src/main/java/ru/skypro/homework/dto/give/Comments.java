@@ -13,8 +13,6 @@ import java.util.List;
 @AllArgsConstructor
 public class Comments {
 
-    @NotEmpty(message = "Count of Comments is required")
     private Integer count;
-    @NotNull
     private List<Comment> results;
 }

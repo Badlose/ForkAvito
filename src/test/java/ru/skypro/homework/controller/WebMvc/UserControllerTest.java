@@ -32,20 +32,16 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static ru.skypro.NewTypeTesting.TestHelper.*;
+import static ru.skypro.homework.helper.TestHelper.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
 @AutoConfigureMockMvc
-//@WithMockUser(username = "string3@mail.ru", password = "zxczxczxc", authorities = {"USER"})
 public class UserControllerTest {
 
     @Container
     public static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15");
 
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate; //для теста коннекшена
 
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
@@ -54,6 +50,11 @@ public class UserControllerTest {
         registry.add("spring.datasource.password", postgres::getPassword);
     }
 
+    @Autowired
+    private JdbcTemplate jdbcTemplate; //для теста коннекшена
+
+    @Autowired
+    private BCryptPasswordEncoder encoder;
     @Autowired
     private ObjectMapper objectMapper;
     @Autowired
@@ -64,7 +65,7 @@ public class UserControllerTest {
     private static UserRepository staticUserRepository;
 
 
-    @BeforeAll
+    @BeforeAll //todo
     static void setUp(@Autowired UserRepository repository) {
         staticUserRepository = repository;
         String password = "zxczxczxc";
@@ -108,7 +109,7 @@ public class UserControllerTest {
         UserEntity updatedUser = staticUserRepository.findByUsername("username").orElseThrow();
         String encodedPwFromDb = updatedUser.getPassword();
 
-        assertThat(new BCryptPasswordEncoder().matches(newPassword.getNewPassword(), encodedPwFromDb)).isTrue();
+        assertThat(encoder.matches(newPassword.getNewPassword(), encodedPwFromDb)).isTrue();
     }
 
     @Test

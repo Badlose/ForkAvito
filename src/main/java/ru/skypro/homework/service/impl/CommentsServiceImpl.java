@@ -1,7 +1,7 @@
 package ru.skypro.homework.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -13,10 +13,7 @@ import ru.skypro.homework.dto.give.Comments;
 import ru.skypro.homework.entity.AdEntity;
 import ru.skypro.homework.entity.CommentEntity;
 import ru.skypro.homework.entity.UserEntity;
-import ru.skypro.homework.exception.AccessNotAllowedException;
-import ru.skypro.homework.exception.AdNotFoundException;
-import ru.skypro.homework.exception.CommentNotFoundException;
-import ru.skypro.homework.exception.UserNotFoundException;
+import ru.skypro.homework.exception.*;
 import ru.skypro.homework.repository.AdRepository;
 import ru.skypro.homework.repository.CommentRepository;
 import ru.skypro.homework.repository.UserRepository;
@@ -27,6 +24,7 @@ import java.util.List;
 
 import static ru.skypro.homework.mapper.CommentMapper.*;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CommentsServiceImpl implements CommentsService {
@@ -50,55 +48,50 @@ public class CommentsServiceImpl implements CommentsService {
         UserEntity userEntity = getUserEntity(userDetails);
         CommentEntity commentEntity = createComment(userEntity, adFromDB, comment);
         commentRepository.save(commentEntity);
+        log.info("New comment was added for Ad with id: {}", id);
         return toComment(commentEntity);
     }
 
     @Override
     @Transactional
-//    @PreAuthorize("hasRole('ADMIN') or (hasRole('ROLE_USER') and checkAdAuthorId(#adId))")
     public void deleteComment(Integer adId, Integer commentId) {
+        log.info("                                      we are here 58");
         CommentEntity commentEntity = getCommentEntityFromDb(commentId);
-        if (checkAuthority(commentEntity)) {
-            commentRepository.deleteById(commentId);
-        } else {
-            throw new AccessNotAllowedException("Вы не имеете права удалить этот комментарий.");
-        }
+        log.info("                                      we are here 60");
+        validateCommentAuthor(commentId, commentEntity);
+        log.info("                                      we are here 62");
+        commentRepository.deleteById(commentId);
     }
 
     @Override
     @Transactional
-//    @PreAuthorize("hasRole('ADMIN') or (hasRole('ROLE_USER') and checkAdAuthorId(#adId))")
     public Comment updateComment(Integer adId, Integer commentId, CreateOrUpdateComment comment) {
         CommentEntity commentEntity = getCommentEntityFromDb(commentId);
-        if (checkAuthority(commentEntity)) {
-            commentEntity.setText(comment.getText());
-            commentRepository.save(commentEntity);
-            return toComment(commentEntity);
-        } else {
-            throw new AccessNotAllowedException("Вы не имеете права редактировать этот комментарий.");
-        }
+//        validateCommentAuthor(commentId, commentEntity);
+        commentEntity.setText(comment.getText());
+        commentRepository.save(commentEntity);
+        log.info("Comment was updated for Ad with id: {}", adId);
+        return toComment(commentEntity);
     }
 
     @Transactional
     private UserEntity getUserEntity(CustomUserDetails userDetails) {
         String username = userDetails.getUsername();
         return userRepository.findByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException(String.format("User %s not found", username)));
+                .orElseThrow(() -> new UserNotFoundException(String.format(username)));
     }
 
     @Transactional
     private AdEntity getAdFromDB(Integer id) {
-        return adRepository.findById(id).orElseThrow(() -> new AdNotFoundException(
-                String.format("Ad with %d not found", id)
-        ));
+        return adRepository.findById(id).orElseThrow(() -> new AdNotFoundException(id));
     }
 
-//    private boolean checkAdAuthorId(CustomUserDetails userDetails, Integer adId) {
-//        UserEntity userEntity = getUserEntity(userDetails);
-//        return userEntity.getComments().stream()
-//                .anyMatch(commentEntity -> commentEntity.getUser().getAds().stream()
-//                        .anyMatch(adEntity -> adEntity.getPk().equals(adId)));
-//    }
+
+    private void validateCommentAuthor(Integer commentId, CommentEntity commentEntity) {
+        if (!checkAuthority(commentEntity)) {
+            throw new CommentAccessNotAllowedException(commentId);
+        }
+    }
 
     private boolean checkAuthority(CommentEntity commentEntity) {
         UserEntity userEntity = getUserEntityFromAuthentication();
@@ -109,14 +102,20 @@ public class CommentsServiceImpl implements CommentsService {
     private UserEntity getUserEntityFromAuthentication() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
-        return userRepository.findByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException(String.format("User %s not found", username)));
+        return userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
     }
 
     private CommentEntity getCommentEntityFromDb(Integer commentId) {
-        return commentRepository.findById(commentId)
-                .orElseThrow(() -> new CommentNotFoundException(
-                        String.format("Comment with id %d not found", commentId)));
+        return commentRepository.findById(commentId).orElseThrow(() -> new CommentNotFoundException(commentId));
+    }
+
+
+    public boolean checkCommentAuthor(Integer id) {
+        CommentEntity commentEntity = getCommentEntityFromDb(id);
+        UserEntity userEntity = getUserEntityFromAuthentication();
+        Integer userId = userEntity.getId();
+        Integer commentId = commentEntity.getUser().getId();
+        return userId.equals(commentId);
     }
 
 }
