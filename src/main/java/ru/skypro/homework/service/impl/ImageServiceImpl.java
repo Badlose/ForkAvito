@@ -25,6 +25,8 @@ public class ImageServiceImpl implements ImageService {
     private String usersImageDirectory;
     @Value("${path.to.ads.image.folder}")
     private String adsImageDirectory;
+    @Value("${path.to.parent.folder}")
+    private String parentFolder;
 
     @Override
     public String uploadUserImage(MultipartFile image, Integer id) {
@@ -53,20 +55,32 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public byte[] getUpdatedImageBytes(String imageUrl) {
-        Path filePath = Path.of(imageUrl);
-        return getBytes(filePath);
+        Path filePath = Path.of(parentFolder + imageUrl);
+        try {
+            return Files.readAllBytes(filePath);
+        } catch (IOException e) {
+            throw new UnreadableImageException(getStringSortFilePath(filePath));
+        }
+    }
+
+    @Override
+    public void deleteImage(String imageUrl) {
+        Path filePath = Path.of(parentFolder + imageUrl);
+        try {
+            Files.delete(filePath);
+        } catch (IOException e) {
+            throw new ImageNotFoundException(getStringSortFilePath(filePath));
+        }
     }
 
     private String saveImage(MultipartFile image, String imageUri) {
-        Path filePath = Path.of(imageUri);
+        Path filePath = Path.of(parentFolder + imageUri);
         try {
             Files.createDirectories(filePath.getParent());
             Files.deleteIfExists(filePath);
-
         } catch (IOException e) {
             throw new FilePathCreationException(getStringSortFilePath(filePath));
         }
-
         try {
             image.transferTo(filePath);
         } catch (IOException e) {
@@ -75,10 +89,11 @@ public class ImageServiceImpl implements ImageService {
         return imageUri;
     }
 
+
     private byte[] getBytes(Path realPath) {
         try {
             checkImageExist(realPath);
-            return Files.readAllBytes(realPath);
+            return Files.readAllBytes(Path.of(parentFolder + realPath));
         } catch (IOException e) {
             throw new UnreadableImageException(getStringSortFilePath(realPath));
         }
@@ -89,8 +104,7 @@ public class ImageServiceImpl implements ImageService {
     }
 
     private void checkImageExist(Path realPath) {
-        if (!Files.exists(realPath)) {
-            log.info(realPath.toString());
+        if (!Files.exists(Path.of(parentFolder + realPath))) {
             throw new ImageNotFoundException(getStringSortFilePath(realPath));
         }
     }

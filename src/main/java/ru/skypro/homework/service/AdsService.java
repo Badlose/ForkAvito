@@ -7,8 +7,6 @@ import ru.skypro.homework.dto.give.Ads;
 import ru.skypro.homework.dto.give.ExtendedAd;
 import ru.skypro.homework.security.CustomUserDetails;
 
-import java.io.IOException;
-
 public interface AdsService {
 
     Ads getAllAds();
@@ -27,5 +25,4 @@ public interface AdsService {
 
     byte[] getAdImage(String id);
 
-//    boolean checkAdAuthor(Integer id);
 }

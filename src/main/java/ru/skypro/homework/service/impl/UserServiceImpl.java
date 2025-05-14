@@ -2,10 +2,6 @@ package ru.skypro.homework.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -64,6 +60,7 @@ public class UserServiceImpl implements UserService {
     public void updateUserImage(CustomUserDetails userDetails, MultipartFile image) {
         UserEntity userEntity = getUserEntity(userDetails);
         Integer userId = userEntity.getId();
+        imageService.deleteImage(userEntity.getImage());
         String imageUrl = imageService.uploadUserImage(image, userId);
         log.info("Image for user with id {} was updated", userId);
         userEntity.setImage(imageUrl);

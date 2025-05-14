@@ -5,9 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import ru.skypro.homework.dto.Role;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-
 @Data
 @Builder
 @Schema(description = "ДТО для получения информации об авторизованном пользователе")

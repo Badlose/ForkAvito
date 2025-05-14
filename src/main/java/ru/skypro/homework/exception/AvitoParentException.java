@@ -12,4 +12,5 @@ public class AvitoParentException extends RuntimeException {
         super(message);
         this.errorType = errorType;
     }
+
 }

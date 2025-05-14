@@ -10,4 +10,5 @@ public class AdAccessNotAllowedException extends AvitoParentException {
     public AdAccessNotAllowedException(Integer id) {
         super(AD_ACCESS_NOT_ALLOWED, "You are not authorized to edit this ad: [%s]".formatted(id));
     }
+
 }
