@@ -1,8 +1,5 @@
 package ru.skypro.homework.mapper;
 
-import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import ru.skypro.homework.dto.accept.CreateOrUpdateAd;
 import ru.skypro.homework.dto.give.Ad;
 import ru.skypro.homework.dto.give.Ads;

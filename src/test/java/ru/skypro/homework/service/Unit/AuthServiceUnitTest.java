@@ -7,22 +7,18 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import ru.skypro.homework.dto.accept.Login;
 import ru.skypro.homework.dto.accept.Register;
 import ru.skypro.homework.entity.UserEntity;
 import ru.skypro.homework.mapper.AuthMapper;
 import ru.skypro.homework.repository.UserRepository;
-import ru.skypro.homework.security.CustomUserDetails;
 import ru.skypro.homework.security.CustomUserDetailsService;
 import ru.skypro.homework.service.impl.AuthServiceImpl;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
-import static ru.skypro.homework.helper.TestHelper.*;
+import static ru.skypro.homework.helper.TestHelper.getEncodedNewPassword;
+import static ru.skypro.homework.helper.TestHelper.getRegister;
 
 @ExtendWith(MockitoExtension.class)
 @RequiredArgsConstructor
@@ -31,15 +27,12 @@ public class AuthServiceUnitTest {
     private PasswordEncoder encoder;
     @Mock
     private UserRepository repository;
-    @Mock
-    private CustomUserDetailsService userDetailsService;
     @InjectMocks
     private AuthServiceImpl service;
 
     @Test
     void shouldRegister() {
         Register register = getRegister();
-//        register.setPassword(getOldPlainPassword());
 
         UserEntity userEntity = AuthMapper.createNewUser(register);
 
@@ -54,20 +47,4 @@ public class AuthServiceUnitTest {
         assertThat(register.getUsername()).isEqualTo(userEntity.getUsername());
     }
 
-//    @Test todo
-//    void shouldLogin() {
-//        Login login = getLogin();
-//        CustomUserDetails userDetails = getCustomUserDetails();
-//
-//
-//        when(repository.existsByUsername(login.getUsername())).thenReturn(true);
-//        when(userDetailsService.loadUserByUsername(login.getUsername())).thenReturn(userDetails);
-//        when(encoder.matches(login.getPassword(), userDetails.getPassword())).thenReturn(true);
-//
-//        service.login(login);
-//
-//        verify(repository, times(1)).existsByUsername(login.getUsername());
-//        verify(userDetailsService, times(1)).loadUserByUsername(login.getUsername());
-//        verify(encoder, times(1)).matches(login.getPassword(), userDetails.getPassword());
-//    }
 }

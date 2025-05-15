@@ -6,6 +6,9 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,11 +23,10 @@ import ru.skypro.homework.repository.CommentRepository;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.security.CustomUserDetails;
 import ru.skypro.homework.service.impl.CommentsServiceImpl;
-import ru.skypro.homework.service.impl.ImageServiceImpl;
 
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import static ru.skypro.homework.helper.TestHelper.*;
 
@@ -39,9 +41,8 @@ public class CommentServiceUnitTest {
     @InjectMocks
     private CommentsServiceImpl service;
 
-
     @Test
-    void shouldAddComment() { //todo время создания комментария
+    void shouldAddComment() {
         UserEntity userEntity = createUserEntity();
         CustomUserDetails userDetails = new CustomUserDetails(userEntity);
         AdEntity adEntity = createAdEntityBuilder()
@@ -89,35 +90,40 @@ public class CommentServiceUnitTest {
     }
 
     @Test
-    @Transactional
     void shouldUpdateComment() {
+        CreateOrUpdateComment updateComment = getCreateOrUpdateComment();
+
         UserEntity userEntity = createUserEntity();
         CustomUserDetails userDetails = new CustomUserDetails(userEntity);
         Authentication authentication = new TestAuthentication(userDetails);
         SecurityContextHolder.getContext().setAuthentication(authentication);
+
         AdEntity adEntity = createAdEntityBuilder()
                 .pk(1)
                 .user(userEntity)
                 .build();
         Integer adId = adEntity.getPk();
+
         CommentEntity commentEntity = createCommentEntityBuilder()
                 .ad(adEntity)
                 .user(userEntity)
                 .build();
         Integer commentId = commentEntity.getPk();
-        CreateOrUpdateComment updateComment = getCreateOrUpdateComment();
+
+        when(userRepository.findByUsername(userEntity.getUsername())).thenReturn(Optional.of(userEntity));
+        when(commentRepository.findById(commentId)).thenReturn(Optional.of(commentEntity));
+        when(commentRepository.save(ArgumentMatchers.any(CommentEntity.class))).thenReturn(any(CommentEntity.class));
+
         CommentEntity entityBefore = createCommentEntityBuilder()
                 .ad(adEntity)
                 .user(userEntity)
                 .text(updateComment.getText())
                 .build();
 
-        when(commentRepository.findById(commentId)).thenReturn(Optional.of(commentEntity));
-        when(commentRepository.save(ArgumentMatchers.any(CommentEntity.class))).thenReturn(any(CommentEntity.class));
-
         Comment updatedComment = service.updateComment(adId, commentId, updateComment);
 
         verify(commentRepository).save(ArgumentMatchers.any(CommentEntity.class));
         assertThat(updatedComment.getText()).isEqualTo(entityBefore.getText());
     }
+
 }

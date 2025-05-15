@@ -2,13 +2,16 @@ package ru.skypro.homework.service;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.accept.CreateOrUpdateAd;
@@ -21,10 +24,12 @@ import ru.skypro.homework.repository.AdRepository;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.security.CustomUserDetails;
 import ru.skypro.homework.service.impl.AdsServiceImpl;
+import ru.skypro.homework.service.impl.ImageServiceImpl;
 
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
 import static ru.skypro.homework.helper.TestHelper.*;
 
 @SpringBootTest
@@ -37,7 +42,6 @@ public class AdServiceImplTest {
     private AdsServiceImpl service;
 
     @BeforeEach
-    @Transactional
     void setUpData() {
         UserEntity preparedUserEntity = createUserEntityBuilder()
                 .id(null)
@@ -48,6 +52,7 @@ public class AdServiceImplTest {
         AdEntity adEntity = createAdEntityBuilder()
                 .pk(null)
                 .user(preparedUserEntity)
+                .image("testImage.jpg")
                 .build();
         repository.save(adEntity);
     }
@@ -76,8 +81,7 @@ public class AdServiceImplTest {
     }
 
     @Test
-    @Transactional
-    void shouldCreateNewAd() throws IOException {
+    void shouldCreateNewAd() {
         UserEntity userEntity = userRepository.findByUsername("username").orElseThrow();
         CustomUserDetails userDetails = new CustomUserDetails(userEntity);
         CreateOrUpdateAd createdAd = getCreateOrUpdateAd();
@@ -90,7 +94,6 @@ public class AdServiceImplTest {
     }
 
     @Test
-    @Transactional
     void shouldGetAdById() {
         UserEntity userEntity = userRepository.findByUsername("username").orElseThrow();
         AdEntity adEntity = repository.findByUserId(userEntity.getId());
@@ -111,6 +114,9 @@ public class AdServiceImplTest {
     @Test
     void shouldUpdateAd() {
         UserEntity userEntity = userRepository.findByUsername("username").orElseThrow();
+        CustomUserDetails userDetails = new CustomUserDetails(userEntity);
+        Authentication authentication = new TestAuthentication(userDetails);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
         AdEntity adEntity = repository.findByUserId(userEntity.getId());
         CreateOrUpdateAd updateAd = getCreateOrUpdateAd();
 
@@ -143,18 +149,18 @@ public class AdServiceImplTest {
     }
 
     @Test
-    @Transactional
     void shouldRemoveAd() {
         UserEntity userEntity = userRepository.findByUsername("username").orElseThrow();
         CustomUserDetails userDetails = new CustomUserDetails(userEntity);
         Authentication authentication = new TestAuthentication(userDetails);
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        AdEntity adEntity = repository.findByUserId(userEntity.getId());
-        Integer adId = adEntity.getPk();
+        CreateOrUpdateAd createOrUpdateAd = getCreateOrUpdateAd();
+        MultipartFile image = getMultipartFileSemiStub();
+        Ad ad = service.createNewAd(userDetails, createOrUpdateAd, image);
 
-        service.removeAd(adId);
+        service.removeAd(ad.getPk());
 
-        assertThat(repository.existsById(adId)).isFalse();
+        assertThat(repository.existsById(ad.getPk())).isFalse();
     }
 
 }

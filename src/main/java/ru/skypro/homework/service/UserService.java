@@ -6,8 +6,6 @@ import ru.skypro.homework.dto.accept.NewPassword;
 import ru.skypro.homework.dto.give.User;
 import ru.skypro.homework.security.CustomUserDetails;
 
-import java.io.IOException;
-
 public interface UserService {
 
     void setPassword(CustomUserDetails userDetails, NewPassword newPassword);
@@ -20,5 +18,4 @@ public interface UserService {
 
     byte[] getUserImage(String id);
 
-//    String uploadImage(CustomUserDetails userDetails, MultipartFile image);
 }

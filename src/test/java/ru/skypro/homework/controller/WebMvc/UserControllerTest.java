@@ -26,9 +26,7 @@ import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.security.CustomUserDetails;
 import ru.skypro.homework.service.UserService;
 
-
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -51,9 +49,6 @@ public class UserControllerTest {
     }
 
     @Autowired
-    private JdbcTemplate jdbcTemplate; //для теста коннекшена
-
-    @Autowired
     private BCryptPasswordEncoder encoder;
     @Autowired
     private ObjectMapper objectMapper;
@@ -64,8 +59,7 @@ public class UserControllerTest {
     @Autowired
     private static UserRepository staticUserRepository;
 
-
-    @BeforeAll //todo
+    @BeforeAll
     static void setUp(@Autowired UserRepository repository) {
         staticUserRepository = repository;
         String password = "zxczxczxc";
@@ -76,14 +70,6 @@ public class UserControllerTest {
                 .build();
 
         staticUserRepository.save(userEntity);
-    }
-
-
-    @Test
-    @Transactional
-    void testConnection() {
-        Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM information_schema.tables", Integer.class);
-        System.out.println(staticUserRepository.findByUsername("username"));
     }
 
     @Test
@@ -102,10 +88,6 @@ public class UserControllerTest {
         perform
                 .andExpect(status().isOk())
                 .andDo(print());
-//                .andExpect(result -> { todo почему так не работает?
-//                    assertThat(new BCryptPasswordEncoder()
-//                            .matches(newPassword.getNewPassword(), userDetails.getPassword())).isTrue();
-//                });
         UserEntity updatedUser = staticUserRepository.findByUsername("username").orElseThrow();
         String encodedPwFromDb = updatedUser.getPassword();
 
@@ -156,59 +138,4 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.phone").value(updateUser.getPhone()));
     }
 
-//    @Test
-//    void shouldUpdateUserImage() throws Exception {
-//        UserEntity userEntity = staticUserRepository.findByUsername("username").orElseThrow();
-//        CustomUserDetails userDetails = new CustomUserDetails(userEntity);
-//        Authentication authentication = new TestAuthentication(userDetails);
-//        SecurityContextHolder.getContext().setAuthentication(authentication);
-//
-//
-//
-//        MultipartFile image = getMultipartFileSemiStub();
-//
-//        MockMultipartFile mockImage = new MockMultipartFile(
-//                "image",
-//                "test.png",
-//                "image/png",
-//                "some image data".getBytes()
-//        );
-//
-//        byte[] imageBytes = "some image data".getBytes();
-//
-//
-//
-//        ResultActions perform = mockMvc.perform(patch("/users/me/image")
-//                .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
-//                .content(imageBytes));  todo совсем не пошел
-//
-//        perform
-//                .andExpect(status().isOk());
-//    }
-
-
-
-
-//
-//    @Test
-////    @WithMockUser(username = "string3@mail.ru", password = "zxczxczxc", authorities = {"USER"})
-//    void shouldSetPassword() throws Exception {
-//        NewPassword newPassword = getNewPassword();
-//
-//        ResultActions perform = mockMvc.perform(post("/users/set_password")
-//
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(objectMapper.writeValueAsString(newPassword)));
-//
-//        perform
-//                .andExpect(status().isOk())
-//                .andDo(print());
-//
-//        //todo польза от сообщениян в body - его можно протестировать
-//    }
-//
-//    @Test
-//    void shouldGetUser() {
-//
-//    }
 }

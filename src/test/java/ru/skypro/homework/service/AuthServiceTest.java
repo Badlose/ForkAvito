@@ -4,15 +4,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import ru.skypro.homework.dto.accept.Register;
 import ru.skypro.homework.entity.UserEntity;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.impl.AuthServiceImpl;
 
-import static org.assertj.core.api.Assertions.*;
-import static ru.skypro.homework.helper.TestHelper.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static ru.skypro.homework.helper.TestHelper.getRegister;
 
 @SpringBootTest
 @Transactional
@@ -40,13 +39,5 @@ public class AuthServiceTest {
         assertThat(userEntity.getPhone()).isEqualTo(register.getPhone());
         assertThat(userEntity.getRole()).isEqualTo(register.getRole());
     }
-
-//    @Test todo
-//    void shouldLogin() {
-//        Login login = getLogin();
-//
-//        assertThat(service.login(login)
-//
-//    }
 
 }

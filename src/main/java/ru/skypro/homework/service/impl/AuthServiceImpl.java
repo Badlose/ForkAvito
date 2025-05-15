@@ -2,7 +2,6 @@ package ru.skypro.homework.service.impl;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +23,13 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder encoder;
     private final CustomUserDetailsService service;
 
+    /**
+     * Login user by auth data
+     * @param login DTO object from
+     * @return {@code true} if user with this {@code userName} is existed and
+     * {@code password} is correct, <br>
+     * {@code false} otherwise
+     */
     @Override
     public boolean login(Login login) {
         if (!repository.existsByUsername(login.getUsername())) {
@@ -33,6 +39,12 @@ public class AuthServiceImpl implements AuthService {
         return encoder.matches(login.getPassword(), userDetails.getPassword());
     }
 
+    /**
+     * Register new user
+     * @param register object with new user's data
+     * @return {@code true} if new user successfully registered, <br>
+     * {@code false} if user with this username is already exist
+     */
     @Override
     @Transactional
     public boolean register(Register register) {
