@@ -36,6 +36,10 @@ public class AdsServiceImpl implements AdsService {
     private final AdRepository adRepository;
     private final UserRepository userRepository;
 
+    /**
+     * Get all ads
+     * @return {@link Ads}
+     */
     @Override
     @Transactional
     public Ads getAllAds() {
@@ -43,6 +47,13 @@ public class AdsServiceImpl implements AdsService {
         return toAds(adEntityList);
     }
 
+    /**
+     * Create new ad
+     * @param userDetails Authorized user from CustomUserDetails
+     * @param createAd Ad's data
+     * @param image Ad's image
+     * @return {@link Ad}
+     */
     @Override
     @Transactional
     public Ad createNewAd(CustomUserDetails userDetails, CreateOrUpdateAd createAd, MultipartFile image) {
@@ -56,6 +67,11 @@ public class AdsServiceImpl implements AdsService {
         return toAd(createAd, entity);
     }
 
+    /**
+     * Get Ad by id
+     * @param id Ad`s id
+     * @return {@link ExtendedAd}
+     */
     @Override
     @Transactional
     public ExtendedAd getAdById(Integer id) {
@@ -63,6 +79,10 @@ public class AdsServiceImpl implements AdsService {
         return toExtendedAd(entity);
     }
 
+    /**
+     * Remove ad and ad`s image from DB
+     * @param id Ad`s id
+     */
     @Override
     @Transactional
     public void removeAd(Integer id) {
@@ -73,6 +93,12 @@ public class AdsServiceImpl implements AdsService {
         imageService.deleteImage(imageUri);
     }
 
+    /**
+     * Update ad
+     * @param id Ad`s id
+     * @param updateAd Ad's new data
+     * @return {@link Ad}
+     */
     @Override
     @Transactional
     public Ad updateAd(Integer id, CreateOrUpdateAd updateAd) {
@@ -84,6 +110,11 @@ public class AdsServiceImpl implements AdsService {
         return toAd(adEntity);
     }
 
+    /**
+     * Get all Authorized user ad`s
+     * @param userDetails Authorized user from CustomUserDetails
+     * @return {@link Ads}
+     */
     @Override
     @Transactional
     public Ads getAdsMe(CustomUserDetails userDetails) {
@@ -92,6 +123,12 @@ public class AdsServiceImpl implements AdsService {
         return toAds(adEntityList);
     }
 
+    /**
+     * Update ad`s image
+     * @param id Ad`s id
+     * @param image new image
+     * @return image byte[]
+     */
     @Override
     @Transactional
     public byte[] updateImage(Integer id, MultipartFile image) {
@@ -105,12 +142,21 @@ public class AdsServiceImpl implements AdsService {
         return imageService.getUpdatedImageBytes(imageUri);
     }
 
+    /**
+     * Get ad`s image
+     * @param id image id
+     * @return image byte[]
+     */
     @Override
     @Transactional
     public byte[] getAdImage(String id) {
         return imageService.getAdsImageBytes(id);
     }
 
+    /**
+     * Validate ad`s author
+     * @param id Ad`s id
+     */
     private void validateAuthor(Integer id) {
         AdEntity adEntity = getAdEntity(id);
         if (!checkAuthority(adEntity)) {
@@ -118,28 +164,53 @@ public class AdsServiceImpl implements AdsService {
         }
     }
 
+    /**
+     * Check user`s right to edit ad
+     * @param adEntity ad form DB
+     * @return {@code true} if user is ad`s author, <br>
+     * {@code false} otherwise
+     */
     private boolean checkAuthority(AdEntity adEntity) {
         UserEntity userEntity = getUserEntityFromAuthentication();
         return userEntity.getRole().equals(Role.ADMIN) ||
                 userEntity.getId().equals(adEntity.getUser().getId());
     }
 
+    /**
+     * Get user entity from Authentication
+     * @return {@link UserEntity}
+     */
     private UserEntity getUserEntityFromAuthentication() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         return userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
     }
 
+    /**
+     * Get Ad entity from DB
+     * @param id Ad`s id
+     * @return {@link AdEntity}
+     */
     private AdEntity getAdEntity(Integer id) {
         return adRepository.findById(id).orElseThrow(() -> new AdNotFoundException(id));
     }
 
-
+    /**
+     * Get User entity from DB
+     * @param userDetails Authorized user from CustomUserDetails
+     * @return {@link UserEntity}
+     */
     private UserEntity getUserEntity(CustomUserDetails userDetails) {
         String username = userDetails.getUsername();
         return userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
     }
 
+    /**
+     * Check Ad author in AdsController methods
+     * @param id Ad`s id
+     * @return {@code true} if user is ad`s author, <br>
+     * {@code false} otherwise
+     */
     public boolean checkAdAuthor(Integer id) {
         AdEntity adEntity = getAdEntity(id);
         UserEntity userEntity = getUserEntityFromAuthentication();
