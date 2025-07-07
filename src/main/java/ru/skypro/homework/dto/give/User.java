@@ -17,4 +17,5 @@ public class User {
     private String phone;
     private Role role;
     private String image;
+
 }
